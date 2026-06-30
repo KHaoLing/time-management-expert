@@ -1,0 +1,1497 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>并行任务排程器 · 竖屏窄版</title>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --panel: #fff;
+      --text: #172033;
+      --muted: #64748b;
+      --line: #e5e7eb;
+      --line2: #cbd5e1;
+      --primary: #315efb;
+      --soft: #e8edff;
+      --danger: #dc2626;
+      --ok: #10b981;
+      --warn: #f59e0b;
+      --shadow: 0 14px 34px rgba(15, 23, 42, .10);
+      --radius: 18px;
+      --bottom: 72px;
+      --header: 54px;
+      --axis: 44px;
+      --lane: 80px;
+      --topbar: 38px;
+      --ppm: 8px;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    }
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent
+    }
+    html,
+    body {
+      margin: 0;
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden
+    }
+    button,
+    input,
+    select {
+      font: inherit
+    }
+    input[type=number] {
+      -moz-appearance: textfield;
+      appearance: textfield
+    }
+    input[type=number]::-webkit-outer-spin-button,
+    input[type=number]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0
+    }
+    .phone {
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      background: radial-gradient(circle at 15% -10%, rgba(49, 94, 251, .14), transparent 34%), radial-gradient(circle at 100% 0%, rgba(16, 185, 129, .10), transparent 28%), var(--bg)
+    }
+    .app-header {
+      height: var(--header);
+      padding: 10px 14px 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex: 0 0 var(--header)
+    }
+    .title {
+      min-width: 0
+    }
+    .title h1 {
+      margin: 0;
+      font-size: 17px;
+      letter-spacing: - .03em;
+      line-height: 1.1
+    }
+    .title span {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+    .header-stat {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex-shrink: 0
+    }
+    .mini {
+      background: rgba(255, 255, 255, .86);
+      border: 1px solid var(--line);
+      box-shadow: 0 8px 18px rgba(15, 23, 42, .06);
+      border-radius: 12px;
+      padding: 6px 8px;
+      min-width: 54px;
+      text-align: center
+    }
+    .mini b {
+      display: block;
+      font-size: 13px
+    }
+    .mini small {
+      display: block;
+      color: var(--muted);
+      font-size: 9px;
+      margin-top: 1px
+    }
+    .screen {
+      display: none;
+      flex: 1;
+      min-height: 0;
+      padding: 0 12px calc(var(--bottom) + env(safe-area-inset-bottom));
+      overflow: auto
+    }
+    .screen.active {
+      display: block
+    }
+    .card {
+      background: rgba(255, 255, 255, .92);
+      border: 1px solid rgba(229, 231, 235, .92);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      backdrop-filter: blur(12px)
+    }
+    .toolbar {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      padding: 10px 2px 12px;
+      position: sticky;
+      top: 0;
+      z-index: 4;
+      background: linear-gradient(to bottom, var(--bg) 80%, rgba(246, 247, 251, 0));
+      backdrop-filter: blur(8px)
+    }
+    .toolbar button,
+    .pill-btn {
+      border: 0;
+      border-radius: 13px;
+      background: var(--primary);
+      color: #fff;
+      padding: 10px 12px;
+      font-weight: 900;
+      font-size: 13px;
+      box-shadow: 0 10px 20px rgba(49, 94, 251, .16)
+    }
+    .toolbar button.secondary,
+    .pill-btn.secondary {
+      background: #eef2ff;
+      color: #1e3a8a;
+      border: 1px solid #dbe3ff;
+      box-shadow: none
+    }
+    .toolbar button.danger {
+      background: #fee2e2;
+      color: #b91c1c;
+      border: 1px solid #fecaca;
+      box-shadow: none
+    }
+    .grow {
+      flex: 1
+    }
+    .task-list {
+      display: grid;
+      gap: 10px;
+      padding-bottom: 16px
+    }
+    .task-card {
+      padding: 12px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, .92);
+      border: 1px solid var(--line);
+      box-shadow: 0 8px 20px rgba(15, 23, 42, .06)
+    }
+    .task-head {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 10px
+    }
+    .task-head input {
+      font-size: 16px;
+      font-weight: 900;
+      letter-spacing: - .02em
+    }
+    .delete {
+      width: 34px;
+      height: 34px;
+      border-radius: 11px;
+      border: 1px solid #fecaca;
+      background: #fff1f2;
+      color: #b91c1c;
+      font-weight: 900;
+      flex: 0 0 34px
+    }
+    input,
+    select {
+      height: 36px;
+      width: 100%;
+      border: 1px solid #dbe1ea;
+      border-radius: 12px;
+      background: #fff;
+      padding: 8px 10px;
+      color: var(--text);
+      outline: none;
+      font-size: 13px
+    }
+    input:focus,
+    select:focus {
+      border-color: #8ca8ff;
+      box-shadow: 0 0 0 3px rgba(49, 94, 251, .1)
+    }
+    .seg {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border: 1px solid #dbe3ff;
+      border-radius: 13px;
+      overflow: hidden;
+      margin-bottom: 10px;
+      background: #f8fafc
+    }
+    .seg button {
+      height: 36px;
+      border: 0;
+      background: transparent;
+      color: #64748b;
+      font-weight: 900
+    }
+    .seg button.active {
+      background: var(--primary);
+      color: white
+    }
+    .fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px
+    }
+    .field label {
+      display: block;
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 800;
+      margin: 0 0 5px
+    }
+    .field.full {
+      grid-column: 1/-1
+    }
+    .hidden {
+      display: none !important
+    }
+    .deps-btn-wrap {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .deps-btn-wrap button {
+      border: 1px solid var(--line);
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 8px 14px;
+      font-weight: 800;
+      font-size: 13px;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+      justify-content: center;
+    }
+    .deps-btn-wrap button .badge {
+      background: var(--primary);
+      color: #fff;
+      border-radius: 999px;
+      padding: 0 8px;
+      font-size: 11px;
+      line-height: 18px;
+    }
+    .deps-btn-wrap button .badge.empty {
+      background: #e5e7eb;
+      color: #64748b;
+    }
+    .deps-preview {
+      font-size: 11px;
+      color: var(--muted);
+      max-width: 80px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .hint {
+      margin: 10px 0 0;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: #fff;
+      border: 1px dashed #cbd5e1;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55
+    }
+    /* 时间轴 */
+    .timeline-wrap {
+      height: calc(100dvh - var(--header) - var(--bottom) - 72px);
+      min-height: 420px;
+      margin-top: 8px;
+      border-radius: 20px;
+      overflow: hidden;
+      background: #fff;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow)
+    }
+    .timeline-tools {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--line);
+      background: #fff;
+      flex-wrap: wrap;
+    }
+    .timeline-tools label {
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 900
+    }
+    .timeline-tools input[type=range] {
+      width: 80px;
+      height: auto;
+      padding: 0;
+      box-shadow: none
+    }
+    .timeline-tools .scale-text {
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 800;
+      min-width: 44px;
+    }
+    .timeline-tools .small-btn {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: #475569;
+      border-radius: 10px;
+      padding: 7px 9px;
+      font-size: 12px;
+      font-weight: 900;
+      box-shadow: none;
+    }
+    .timeline-tools .primary-btn {
+      background: var(--primary);
+      color: #fff;
+      border: 0;
+      border-radius: 10px;
+      padding: 7px 12px;
+      font-weight: 900;
+      font-size: 12px;
+      box-shadow: 0 6px 14px rgba(49,94,251,.20);
+    }
+    .timeline-scroll {
+      height: calc(100% - 45px);
+      overflow: auto;
+      background: #fff;
+      position: relative
+    }
+    .timeline-canvas {
+      position: relative;
+      min-height: 100%;
+      user-select: none
+    }
+    .lane-head {
+      position: sticky;
+      top: 0;
+      height: var(--topbar);
+      z-index: 25;
+      background: rgba(248, 250, 252, .96);
+      border-bottom: 1px solid var(--line2);
+      backdrop-filter: blur(8px)
+    }
+    .lane-label {
+      position: absolute;
+      top: 0;
+      height: var(--topbar);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 900;
+      color: #475569;
+      border-left: 1px solid var(--line);
+      background: rgba(248, 250, 252, .96)
+    }
+    .axis-head {
+      position: sticky;
+      left: 0;
+      top: 0;
+      width: var(--axis);
+      height: var(--topbar);
+      z-index: 30;
+      background: #f8fafc;
+      border-right: 1px solid var(--line2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: #64748b;
+      font-weight: 900
+    }
+    .time-tick {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      border-top: 1px solid #eef2f7;
+      pointer-events: none
+    }
+    .time-tick.major {
+      border-top-color: #dbe3ee
+    }
+    .tick-label {
+      position: sticky;
+      left: 0;
+      z-index: 5;
+      width: var(--axis);
+      transform: translateY(-50%);
+      font-size: 10px;
+      font-weight: 800;
+      color: #64748b;
+      background: rgba(255, 255, 255, .88);
+      padding-left: 5px;
+      border-right: 1px solid var(--line)
+    }
+    .lane-bg {
+      position: absolute;
+      top: var(--topbar);
+      bottom: 0;
+      border-left: 1px solid #eef2f7;
+      background: rgba(248, 250, 252, .32);
+      pointer-events: none
+    }
+    .lane-bg:nth-child(odd) {
+      background: #fff
+    }
+    .dep-box {
+      position: absolute;
+      border: 1px dashed rgba(49, 94, 251, .65);
+      border-radius: 16px;
+      background: rgba(49, 94, 251, .025);
+      pointer-events: none;
+      z-index: 6
+    }
+    /* 图块 — 窄版 + 竖排文字 */
+    .task-block {
+      position: absolute;
+      border-radius: 10px;
+      border: 1.5px solid var(--task-color);
+      min-height: 26px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 6px 14px rgba(15, 23, 42, .10);
+      z-index: 10;
+      touch-action: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .task-block.dragging {
+      opacity: .9;
+      z-index: 30;
+      box-shadow: 0 18px 34px rgba(15, 23, 42, .24);
+      cursor: grabbing;
+    }
+    .task-block.continuous {
+      background: linear-gradient(180deg, var(--task-color), var(--task-dark));
+      color: white
+    }
+    .task-block.waiting {
+      color: #0f172a
+    }
+    .wait-solid,
+    .wait-gradient {
+      position: absolute;
+      left: 0;
+      right: 0;
+      pointer-events: none
+    }
+    .wait-solid {
+      top: 0;
+      background: var(--task-color);
+      opacity: .95
+    }
+    .wait-gradient {
+      bottom: 0;
+      background: linear-gradient(180deg, rgba(var(--task-rgb), .55), rgba(var(--task-rgb), .15) 45%, rgba(255, 255, 255, .98) 100%)
+    }
+    .start-handle {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 14px;
+      transform: translateY(-7px);
+      z-index: 8;
+      cursor: ns-resize
+    }
+    .start-handle:before {
+      content: "";
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      top: 6px;
+      border-top: 2px dashed rgba(15, 23, 42, .45)
+    }
+    .resize-handle {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 16px;
+      z-index: 8;
+      cursor: ns-resize;
+      background: linear-gradient(180deg, transparent, rgba(15, 23, 42, .12))
+    }
+    .resize-handle:after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 5px;
+      width: 28px;
+      height: 3px;
+      transform: translateX(-50%);
+      border-radius: 99px;
+      background: rgba(255, 255, 255, .72)
+    }
+    .waiting .resize-handle:after {
+      background: rgba(15, 23, 42, .25)
+    }
+    .block-content {
+      position: relative;
+      z-index: 4;
+      height: 100%;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      padding: 4px 2px;
+      writing-mode: vertical-rl;
+      text-orientation: upright;
+      letter-spacing: 2px;
+    }
+    .block-title {
+      font-size: 11px;
+      font-weight: 900;
+      line-height: 1.2;
+      max-height: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 6;
+      -webkit-box-orient: vertical;
+      word-break: break-all;
+    }
+    .block-meta {
+      display: none;
+    }
+    /* tabbar */
+    .tabbar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: calc(var(--bottom) + env(safe-area-inset-bottom));
+      padding: 8px 16px calc(8px + env(safe-area-inset-bottom));
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      background: rgba(255, 255, 255, .92);
+      backdrop-filter: blur(16px);
+      border-top: 1px solid var(--line);
+      z-index: 100
+    }
+    .tab {
+      border: 0;
+      border-radius: 16px;
+      background: #f1f5f9;
+      color: #64748b;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px
+    }
+    .tab.active {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 12px 24px rgba(49, 94, 251, .22)
+    }
+    /* 模态框共用 */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, .36);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 150
+    }
+    .modal.show {
+      display: flex
+    }
+    .modal-card {
+      width: min(360px, 100%);
+      border-radius: 20px;
+      background: #fff;
+      box-shadow: 0 28px 70px rgba(15, 23, 42, .28);
+      padding: 18px;
+      border: 1px solid var(--line);
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .modal-card h3 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      flex: 0 0 auto;
+    }
+    .modal-card p {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+      flex: 0 0 auto;
+    }
+    .modal-scroll {
+      overflow-y: auto;
+      flex: 1 1 auto;
+      margin-bottom: 12px;
+      padding-right: 4px;
+    }
+    .modal-scroll .dep-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      margin-bottom: 6px;
+      background: #fafbfc;
+    }
+    .modal-scroll .dep-chip input {
+      width: auto;
+      height: auto;
+      accent-color: var(--primary);
+      margin: 0;
+      flex: 0 0 auto;
+    }
+    .modal-scroll .dep-chip label {
+      font-weight: 700;
+      font-size: 14px;
+      flex: 1;
+      color: var(--text);
+    }
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      flex: 0 0 auto;
+    }
+    .modal-actions button {
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      padding: 9px 12px;
+      font-weight: 900
+    }
+    .modal-actions .cancel {
+      background: #fff;
+      color: #475569
+    }
+    .modal-actions .confirm-btn {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary)
+    }
+    /* 详情浮窗内部 */
+    .detail-field {
+      margin-bottom: 12px;
+    }
+    .detail-field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .detail-field input,
+    .detail-field select {
+      width: 100%;
+      height: 40px;
+    }
+    .detail-type-switch {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .detail-type-switch button {
+      flex: 1;
+      border: 1px solid var(--line);
+      background: #f1f5f9;
+      border-radius: 12px;
+      padding: 8px;
+      font-weight: 900;
+      color: #64748b;
+    }
+    .detail-type-switch button.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: calc(var(--bottom) + 14px);
+      transform: translateX(-50%) translateY(12px);
+      background: rgba(15, 23, 42, .94);
+      color: white;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 900;
+      box-shadow: 0 14px 34px rgba(15, 23, 42, .24);
+      opacity: 0;
+      pointer-events: none;
+      transition: .18s;
+      z-index: 200
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0)
+    }
+    @media (min-width:700px) {
+      .phone {
+        max-width: 430px;
+        margin: 0 auto;
+        border-left: 1px solid var(--line);
+        border-right: 1px solid var(--line)
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <header class="app-header">
+      <div class="title"><h1>并行任务排程器</h1><span id="screenSubtitle">手机竖屏 · 任务列表</span></div>
+      <div class="header-stat"><div class="mini"><b id="totalTime">--</b><small>完成</small></div><div class="mini"><b id="busyTime">--</b><small>占用人</small></div></div>
+    </header>
+
+    <main id="taskScreen" class="screen active">
+      <div class="toolbar">
+        <button class="secondary" id="addTask">新增任务</button>
+        <div class="grow"></div>
+        <button class="danger" id="clearAll">清空</button>
+      </div>
+      <div class="task-list" id="taskList"></div>
+      <div class="hint">竖屏窄版 · 时间轴横向压缩，图块竖排显示名称，点击图块可查看/修改详情。</div>
+    </main>
+
+    <main id="timelineScreen" class="screen">
+      <div class="timeline-tools">
+        <label>缩放</label><input id="scale" type="range" min="3" max="18" value="8" /><span id="scaleText" class="scale-text">8 px/分</span>
+        <button id="autoSchedule" class="primary-btn">自动排序</button>
+        <div class="grow"></div>
+        <button id="fit" class="small-btn">适配</button>
+      </div>
+      <section class="timeline-wrap">
+        <div class="timeline-scroll" id="timelineScroll">
+          <div class="timeline-canvas" id="timelineCanvas"></div>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tabbar">
+      <button class="tab active" data-tab="task">📝 任务</button>
+      <button class="tab" data-tab="timeline">📍 时间轴</button>
+    </nav>
+  </div>
+
+  <!-- 前置任务选择模态框 -->
+  <div class="modal" id="depsModal">
+    <div class="modal-card">
+      <h3 id="depsModalTitle">选择前置任务</h3>
+      <p id="depsModalDesc">勾选需要前置的任务，完成后点击确认。</p>
+      <div class="modal-scroll" id="depsModalList"></div>
+      <div class="modal-actions">
+        <button class="cancel" id="depsCancel">取消</button>
+        <button class="confirm-btn" id="depsConfirm">确认</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 任务详情浮窗 -->
+  <div class="modal" id="detailModal">
+    <div class="modal-card">
+      <h3 id="detailTitle">任务详情</h3>
+      <div class="detail-field">
+        <label>任务名称</label>
+        <input id="detailName" type="text" value="">
+      </div>
+      <div class="detail-type-switch" id="detailTypeSwitch">
+        <button data-type="continuous" class="active">持续</button>
+        <button data-type="waiting">等待</button>
+      </div>
+      <div id="detailDurationFields">
+        <div class="detail-field" id="detailDurCont">
+          <label>持续时长（分钟）</label>
+          <input id="detailDuration" type="number" min="1" value="5">
+        </div>
+        <div class="detail-field" id="detailDurWait" style="display:none;">
+          <label>启动时长（分钟）</label>
+          <input id="detailStartWork" type="number" min="1" value="1">
+        </div>
+        <div class="detail-field" id="detailWaitField" style="display:none;">
+          <label>等待时长（分钟）</label>
+          <input id="detailWait" type="number" min="1" value="10">
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="cancel" id="detailCancel">取消</button>
+        <button class="confirm-btn" id="detailConfirm">确认修改</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 确认清空 -->
+  <div class="modal" id="confirmModal">
+    <div class="modal-card">
+      <h3>确认清空全部任务？</h3>
+      <p>这会删除当前任务、前置关系和手动调整记录。此操作不能撤销。</p>
+      <div class="modal-actions"><button class="cancel" id="cancelClear">取消</button><button class="danger" id="confirmClear">确认清空</button></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const palette = [
+      ['#315efb', '49,94,251'],
+      ['#10b981', '16,185,129'],
+      ['#f59e0b', '245,158,11'],
+      ['#8b5cf6', '139,92,246'],
+      ['#06b6d4', '6,182,212'],
+      ['#ef4444', '239,68,68'],
+      ['#14b8a6', '20,184,166']
+    ];
+    let idSeed = 7;
+    let tasks = [
+      { id: 't1', name: '烧水', type: 'waiting', duration: 0, startWork: 1, wait: 10, deps: [], lockedStart: null,
+      lane: null },
+      { id: 't2', name: '洗菜', type: 'continuous', duration: 5, startWork: 0, wait: 0, deps: [], lockedStart: null,
+        lane: null },
+      { id: 't3', name: '煮面', type: 'continuous', duration: 8, startWork: 0, wait: 0, deps: ['t1', 't2'], lockedStart: null,
+        lane: null },
+      { id: 't4', name: '泡木耳', type: 'waiting', duration: 0, startWork: 1, wait: 20, deps: [], lockedStart: null,
+        lane: null },
+      { id: 't5', name: '扔垃圾', type: 'continuous', duration: 6, startWork: 0, wait: 0, deps: [], lockedStart: null,
+        lane: null },
+      { id: 't6', name: '拌木耳', type: 'continuous', duration: 5, startWork: 0, wait: 0, deps: ['t4'], lockedStart: null,
+        lane: null }
+    ];
+    let schedule = null;
+    let pxPerMinute = 8;
+    let toastTimer = null;
+    let activeScreen = 'task';
+    let drag = null;
+    let skipTaskRender = false;
+    let depsTargetId = null;
+    let detailTargetId = null; // 当前详情编辑的任务id
+
+    const $ = id => document.getElementById(id);
+
+    function uid() { return 't' + (idSeed++); }
+
+    function n(v, f = 0) { const x = Number(v); return Number.isFinite(x) ? Math.max(0, Math.round(x)) : f; }
+
+    function taskTotal(t) { return t.type === 'waiting' ? Math.max(1, n(t.startWork) + n(t.wait)) : Math.max(1, n(t.duration,
+        1)); }
+
+    function activeDur(t) { return t.type === 'waiting' ? n(t.startWork) : Math.max(1, n(t.duration, 1)); }
+
+    function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;',
+        "'": '&#39;' } [c])); }
+
+    function dark(hex) { const c = hex.replace('#', ''); return '#' + [0, 2, 4].map(i => Math.max(0, Math.round(parseInt(c
+          .slice(i, i + 2), 16) * .82)).toString(16).padStart(2, '0')).join(''); }
+
+    function toast(msg) { const el = $('toast'); el.textContent = msg; el.classList.add('show'); clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => el.classList.remove('show'), 1500); }
+
+    function getTask(id) { return tasks.find(t => t.id === id); }
+
+    function depNames(t) { return (t.deps || []).map(id => getTask(id)?.name).filter(Boolean); }
+
+    function intervalsOverlap(a1, a2, b1, b2) { return Math.max(a1, b1) < Math.min(a2, b2); }
+
+    function formatMin(m) { if (m < 60) return m + '′'; const h = Math.floor(m / 60),
+        r = m % 60; return r ? h + 'h' + r : h + 'h'; }
+
+    function tickStep(maxEnd) { const steps = [5, 10, 15, 30, 60, 120, 180, 360]; return steps.find(s => s * pxPerMinute >=
+        48) || 360; }
+
+    function setTab(tab) {
+      activeScreen = tab;
+      document.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+      $('taskScreen').classList.toggle('active', tab === 'task');
+      $('timelineScreen').classList.toggle('active', tab === 'timeline');
+      $('screenSubtitle').textContent = tab === 'task' ? '手机竖屏 · 任务列表' : '手机竖屏 · 纵向时间轴';
+      if (tab === 'timeline') renderTimeline();
+    }
+
+    function showConfirm() { $('confirmModal').classList.add('show'); }
+
+    function hideConfirm() { $('confirmModal').classList.remove('show'); }
+
+    // ---- 渲染任务列表 ----
+    function renderTasks() {
+      const box = $('taskList');
+      box.innerHTML = tasks.map(t => {
+        const isW = t.type === 'waiting';
+        const depList = depNames(t);
+        const badge = depList.length ? `<span class="badge">${depList.length}</span>` :
+          `<span class="badge empty">0</span>`;
+        const preview = depList.length ? depList.join('、') : '无';
+        return `<article class="task-card" data-id="${t.id}">
+          <div class="task-head"><input data-field="name" value="${esc(t.name)}"><button class="delete" data-del="${t.id}">×</button></div>
+          <div class="seg"><button type="button" data-type="continuous" class="${!isW?'active':''}">持续</button><button type="button" data-type="waiting" class="${isW?'active':''}">等待</button></div>
+          <div class="fields">
+            <div class="field ${isW?'hidden':''}"><label>持续/分钟</label><input type="number" data-field="duration" value="${t.duration}"></div>
+            <div class="field ${!isW?'hidden':''}"><label>启动/分钟</label><input type="number" data-field="startWork" value="${t.startWork}"></div>
+            <div class="field ${!isW?'hidden':''}"><label>等待/分钟</label><input type="number" data-field="wait" value="${t.wait}"></div>
+          </div>
+          <div class="deps-btn-wrap">
+            <button type="button" class="deps-picker" data-target="${t.id}">🔗 前置任务 ${badge}</button>
+            <span class="deps-preview">${esc(preview)}</span>
+          </div>
+        </article>`;
+      }).join('');
+    }
+
+    function renderStats() {
+      if (!schedule) return;
+      $('totalTime').textContent = schedule.makespan + '′';
+      $('busyTime').textContent = schedule.busy + '′';
+    }
+
+    // ---- 排程核心 ----
+    function buildOps() {
+      const ops = [];
+      const final = new Map();
+      const first = new Map();
+
+      function add(op) { ops.push({ deps: [], earliest: 0, ...op }); return op.id; }
+      tasks.forEach(t => {
+        if (t.type === 'continuous') {
+          const id = add({ id: t.id + ':work', taskId: t.id, kind: 'work', human: true, duration: Math.max(1, n(t
+              .duration, 1)) });
+          first.set(t.id, id);
+          final.set(t.id, id);
+        } else {
+          const s = add({ id: t.id + ':start', taskId: t.id, kind: 'start', human: true, duration: n(t.startWork) });
+          const w = add({ id: t.id + ':wait', taskId: t.id, kind: 'wait', human: false, duration: n(t.wait), deps: [
+              s
+            ] });
+          first.set(t.id, s);
+          final.set(t.id, w);
+        }
+      });
+      tasks.forEach(t => {
+        const f = ops.find(o => o.id === first.get(t.id));
+        (t.deps || []).forEach(d => {
+          const depFinal = final.get(d);
+          if (f && depFinal) f.deps.push(depFinal);
+        });
+        if (f && t.lockedStart !== null && t.lockedStart !== undefined) f.earliest = Math.max(f.earliest, n(t
+          .lockedStart));
+      });
+      return { ops, final };
+    }
+
+    function priority(op) {
+      const t = getTask(op.taskId);
+      const children = tasks.filter(x => (x.deps || []).includes(t.id)).length;
+      if (op.kind === 'start') return 10000 + n(t.wait) * 100 + children * 160;
+      if (op.kind === 'work') return children * 300 - n(t.duration);
+      return 0;
+    }
+
+    function scheduleTasks(clearLocks = false) {
+      if (clearLocks) tasks.forEach(t => { t.lockedStart = null;
+        t.lane = null });
+      tasks.forEach(t => { t.duration = n(t.duration);
+        t.startWork = n(t.startWork);
+        t.wait = n(t.wait) });
+      const { ops, final } = buildOps();
+      const opMap = new Map(ops.map(o => [o.id, o]));
+      const done = new Map();
+      const left = new Set(ops.map(o => o.id));
+      let human = 0,
+        guard = 0;
+
+      function depsDone(op) { return op.deps.every(id => done.has(id)); }
+
+      function ready(op) { return Math.max(op.earliest || 0, op.deps.reduce((m, id) => Math.max(m, done.get(id)?.end ??
+          0), 0)); }
+
+      function put(op, start) { done.set(op.id, { ...op, start, end: start + Math.max(0, op.duration) });
+        left.delete(op.id); }
+
+      function flush() { let changed = true; while (changed) { changed = false; for (const id of Array.from(left)) { const
+            op = opMap.get(id); if (!op.human && depsDone(op)) { put(op, ready(op));
+            changed = true; } } } }
+      while (left.size && guard++ < 500) {
+        flush();
+        const humanOps = Array.from(left).map(id => opMap.get(id)).filter(o => o.human && depsDone(o));
+        if (!humanOps.length) break;
+        const list = humanOps.map(op => ({ op, rt: ready(op), p: priority(op) }));
+        const min = Math.min(...list.map(x => x.rt));
+        if (human < min) human = min;
+        const pool = list.filter(x => x.rt <= human + .001);
+        (pool.length ? pool : list).sort((a, b) => b.p - a.p || a.rt - b.rt);
+        const chosen = (pool.length ? pool : list)[0].op;
+        const start = Math.max(human, ready(chosen));
+        put(chosen, start);
+        human = start + Math.max(0, chosen.duration);
+      }
+      flush();
+      const items = tasks.map((t, i) => {
+        const segs = Array.from(done.values()).filter(o => o.taskId === t.id).sort((a, b) => a.start - b.start);
+        const start = segs.length ? Math.min(...segs.map(s => s.start)) : 0;
+        const end = segs.length ? Math.max(...segs.map(s => s.end)) : start + taskTotal(t);
+        return { task: t, color: palette[i % palette.length], segments: segs, start, end, lane: 0 };
+      });
+      assignLanes(items);
+      const makespan = items.reduce((m, x) => Math.max(m, x.end), 0);
+      const busy = Array.from(done.values()).filter(o => o.human).reduce((s, o) => s + o.end - o.start, 0);
+      schedule = { items, makespan, busy };
+      renderAll();
+    }
+
+    function assignLanes(items) {
+      const parent = new Map(tasks.map(t => [t.id, t.id]));
+
+      function find(id) { if (parent.get(id) !== id) parent.set(id, find(parent.get(id))); return parent.get(id); }
+
+      function union(a, b) { const ra = find(a),
+          rb = find(b); if (ra !== rb) parent.set(ra, rb); }
+      tasks.forEach(t => (t.deps || []).forEach(d => union(t.id, d)));
+      const groups = new Map();
+      tasks.forEach(t => { const r = find(t.id); if (!groups.has(r)) groups.set(r, []); groups.get(r).push(t.id); });
+      const idMap = new Map(items.map(i => [i.task.id, i]));
+      const depGroups = [];
+      const occ = [];
+      let next = 0;
+      for (const g of Array.from(groups.values()).filter(g => g.length > 1)) {
+        const groupItems = g.map(id => idMap.get(id)).filter(Boolean).sort((a, b) => a.start - b.start);
+        const laneIntervals = [];
+        for (const item of groupItems) {
+          let off = 0;
+          while (true) {
+            const ints = laneIntervals[off] || [];
+            if (!ints.some(iv => intervalsOverlap(item.start, item.end, iv.start, iv.end))) {
+              (laneIntervals[off] || (laneIntervals[off] = [])).push({ start: item.start, end: item.end });
+              item.lane = next + off;
+              break;
+            }
+            off++;
+          }
+        }
+        const minLane = next,
+          maxLane = next + laneIntervals.length - 1,
+          start = Math.min(...groupItems.map(i => i.start)),
+          end = Math.max(...groupItems.map(i => i.end));
+        for (let l = minLane; l <= maxLane; l++) {
+          (occ[l] || (occ[l] = [])).push({ start, end, box: true });
+        }
+        depGroups.push({ ids: g, start, end, minLane, maxLane });
+        next += laneIntervals.length;
+      }
+      for (const item of items.filter(i => i.lane === 0 && !depGroups.some(g => g.ids.includes(i.task.id)))) {
+        let lane = Number.isInteger(item.task.lane) ? item.task.lane : 0;
+        while ((occ[lane] || []).some(iv => intervalsOverlap(item.start, item.end, iv.start, iv.end))) lane++;
+        item.lane = lane;
+        (occ[lane] || (occ[lane] = [])).push({ start: item.start, end: item.end });
+      }
+      window.depGroups = depGroups;
+    }
+
+    function renderAll() {
+      if (!skipTaskRender) renderTasks();
+      renderStats();
+      renderTimeline();
+    }
+
+    // ---- 时间轴渲染 ----
+    function renderTimeline() {
+      if (!schedule) return;
+      const canvas = $('timelineCanvas');
+      const maxEnd = Math.max(40, Math.ceil((schedule.makespan + 8) / 5) * 5);
+      const laneCount = Math.max(1, Math.max(0, ...schedule.items.map(i => i.lane)) + 1);
+      const LANE = 80;
+      const width = 44 + laneCount * LANE;
+      const height = 38 + maxEnd * pxPerMinute + 40;
+      canvas.style.width = width + 'px';
+      canvas.style.height = height + 'px';
+      let html = `<div class="lane-head" style="width:${width}px"><div class="axis-head">时间</div></div>`;
+      for (let l = 0; l < laneCount; l++) {
+        html +=
+          `<div class="lane-bg" style="left:${44 + l * LANE}px;width:${LANE}px"></div><div class="lane-label" style="left:${44 + l * LANE}px;width:${LANE}px">行 ${l+1}</div>`;
+      }
+      const step = tickStep(maxEnd);
+      for (let m = 0; m <= maxEnd; m += step) {
+        const y = 38 + m * pxPerMinute;
+        const major = m % (step * 2) === 0;
+        html +=
+          `<div class="time-tick ${major?'major':''}" style="top:${y}px"><div class="tick-label">${formatMin(m)}</div></div>`;
+      }
+      for (const g of window.depGroups || []) {
+        const left = 44 + g.minLane * LANE + 4,
+          top = 38 + g.start * pxPerMinute - 6,
+          w = (g.maxLane - g.minLane + 1) * LANE - 8,
+          h = (g.end - g.start) * pxPerMinute + 12;
+        html +=
+          `<div class="dep-box" style="left:${left}px;top:${Math.max(38,top)}px;width:${w}px;height:${Math.max(28,h)}px"></div>`;
+      }
+      canvas.innerHTML = html;
+      for (const item of schedule.items) {
+        renderBlock(canvas, item);
+      }
+    }
+
+    function renderBlock(canvas, item) {
+      const { task, color, start, end, lane } = item;
+      const LANE = 80;
+      const left = 44 + lane * LANE + 6,
+        top = 38 + start * pxPerMinute,
+        w = LANE - 12,
+        h = Math.max(26, (end - start) * pxPerMinute);
+      const div = document.createElement('div');
+      div.className = 'task-block ' + (task.type === 'waiting' ? 'waiting' : 'continuous');
+      div.dataset.id = task.id;
+      div.style.left = left + 'px';
+      div.style.top = top + 'px';
+      div.style.width = w + 'px';
+      div.style.height = h + 'px';
+      div.style.setProperty('--task-color', color[0]);
+      div.style.setProperty('--task-dark', dark(color[0]));
+      div.style.setProperty('--task-rgb', color[1]);
+      if (task.type === 'waiting') {
+        const p = Math.max(0, Math.min(100, n(task.startWork) / taskTotal(task) * 100));
+        div.innerHTML += `<div class="wait-solid" style="height:${p}%"></div><div class="wait-gradient" style="top:${p}%;height:${100-p}%"></div><div class="start-handle" style="top:${p}%"></div>`;
+      }
+      div.innerHTML +=
+        `<div class="block-content"><div class="block-title">${esc(task.name)}</div></div><div class="resize-handle"></div>`;
+      canvas.appendChild(div);
+      attachBlock(div, item);
+    }
+
+    function updateWaitVisual(block, startWork, total) {
+      const p = Math.max(0, Math.min(100, startWork / Math.max(1, total) * 100));
+      const solid = block.querySelector('.wait-solid'),
+        grad = block.querySelector('.wait-gradient'),
+        handle = block.querySelector('.start-handle');
+      if (solid) solid.style.height = p + '%';
+      if (grad) { grad.style.top = p + '%';
+        grad.style.height = (100 - p) + '%'; }
+      if (handle) handle.style.top = p + '%';
+    }
+
+    function inForeignBox(taskId, lane, start, end) {
+      return (window.depGroups || []).some(g => !g.ids.includes(taskId) && lane >= g.minLane && lane <= g.maxLane &&
+        intervalsOverlap(start, end, g.start, g.end));
+    }
+
+    function attachBlock(block, item) {
+      let pointerDownPos = { x: 0, y: 0, time: 0 };
+      block.addEventListener('pointerdown', e => {
+        pointerDownPos.x = e.clientX;
+        pointerDownPos.y = e.clientY;
+        pointerDownPos.time = Date.now();
+        const task = item.task;
+        const mode = e.target.classList.contains('resize-handle') ? 'resize' : e.target.classList.contains(
+          'start-handle') ? 'start' : 'drag';
+        drag = {
+          mode,
+          id: task.id,
+          sx: e.clientX,
+          sy: e.clientY,
+          top: parseFloat(block.style.top),
+          left: parseFloat(block.style.left),
+          height: parseFloat(block.style.height),
+          lane: item.lane,
+          start: item.start,
+          locked: task.lockedStart,
+          taskLane: task.lane,
+          startWork: n(task.startWork),
+          wait: n(task.wait),
+          total: taskTotal(task),
+          block,
+          pointerDown: { x: e.clientX, y: e.clientY }
+        };
+        block.classList.add('dragging');
+        block.setPointerCapture(e.pointerId);
+        e.preventDefault();
+      });
+      block.addEventListener('pointermove', e => {
+        if (!drag || drag.id !== item.task.id) return;
+        const dy = e.clientY - drag.sy,
+          dx = e.clientX - drag.sx;
+        if (drag.mode === 'drag') {
+          block.style.top = Math.max(38, drag.top + dy) + 'px';
+          block.style.left = Math.max(44, drag.left + dx) + 'px';
+        } else if (drag.mode === 'resize') {
+          const total = Math.max(item.task.type === 'waiting' ? n(item.task.startWork) : 1, Math.round((drag.height +
+            dy) / pxPerMinute));
+          block.style.height = Math.max(26, total * pxPerMinute) + 'px';
+          if (item.task.type === 'waiting') updateWaitVisual(block, n(item.task.startWork), total);
+        } else if (drag.mode === 'start') {
+          const sw = Math.max(0, Math.round((drag.startWork * pxPerMinute + dy) / pxPerMinute));
+          const total = sw + drag.wait;
+          block.style.height = Math.max(26, total * pxPerMinute) + 'px';
+          updateWaitVisual(block, sw, total);
+        }
+      });
+      block.addEventListener('pointerup', e => {
+        const dx = e.clientX - pointerDownPos.x,
+          dy = e.clientY - pointerDownPos.y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        // 如果是点击（位移小且不是拖拽模式），弹出详情
+        if (dist < 6 && !drag) {
+          openDetail(item.task.id);
+        }
+        finishDrag(e, item);
+      });
+      block.addEventListener('pointercancel', e => finishDrag(e, item));
+    }
+
+    function finishDrag(e, item) {
+      if (!drag || drag.id !== item.task.id) return;
+      const task = item.task,
+        block = drag.block;
+      block.classList.remove('dragging');
+      try { block.releasePointerCapture(e.pointerId) } catch {}
+      const LANE = 80;
+      if (drag.mode === 'drag') {
+        const newStart = Math.max(0, Math.round((parseFloat(block.style.top) - 38) / pxPerMinute));
+        let newLane = Math.max(0, Math.round((parseFloat(block.style.left) - 44 - 6) / LANE));
+        const isGroup = (window.depGroups || []).some(g => g.ids.includes(task.id));
+        if (isGroup) newLane = item.lane;
+        const len = item.end - item.start;
+        if (inForeignBox(task.id, newLane, newStart, newStart + len)) {
+          task.lockedStart = drag.locked;
+          task.lane = drag.taskLane;
+          toast('不属于该逻辑组，不能拖进虚线框');
+        } else {
+          task.lockedStart = newStart;
+          if (!isGroup) task.lane = newLane;
+          toast('已调整开始时间');
+        }
+      } else if (drag.mode === 'resize') {
+        const total = Math.max(1, Math.round(parseFloat(block.style.height) / pxPerMinute));
+        if (task.type === 'continuous') task.duration = total;
+        else task.wait = Math.max(0, total - n(task.startWork));
+        toast('已调整长度');
+      } else if (drag.mode === 'start') {
+        const total = Math.max(1, Math.round(parseFloat(block.style.height) / pxPerMinute));
+        task.startWork = Math.max(0, total - drag.wait);
+        task.wait = drag.wait;
+        toast('已调整启动部分');
+      }
+      drag = null;
+      scheduleTasks(false);
+    }
+
+    // ---- 详情浮窗 ----
+    function openDetail(taskId) {
+      const t = getTask(taskId);
+      if (!t) return;
+      detailTargetId = taskId;
+      const modal = $('detailModal');
+      $('detailTitle').textContent = '任务详情 · ' + esc(t.name);
+      $('detailName').value = t.name;
+      // 类型切换
+      const isW = t.type === 'waiting';
+      document.querySelectorAll('#detailTypeSwitch button').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.type === t.type);
+      });
+      // 显示对应字段
+      const cont = $('detailDurCont'),
+        waitDur = $('detailDurWait'),
+        waitField = $('detailWaitField');
+      if (isW) {
+        cont.style.display = 'none';
+        waitDur.style.display = 'block';
+        waitField.style.display = 'block';
+        $('detailStartWork').value = t.startWork;
+        $('detailWait').value = t.wait;
+      } else {
+        cont.style.display = 'block';
+        waitDur.style.display = 'none';
+        waitField.style.display = 'none';
+        $('detailDuration').value = t.duration;
+      }
+      modal.classList.add('show');
+    }
+
+    function closeDetail() { $('detailModal').classList.remove('show');
+      detailTargetId = null; }
+
+    // 详情类型切换
+    document.querySelectorAll('#detailTypeSwitch button').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const type = this.dataset.type;
+        const isW = type === 'waiting';
+        document.querySelectorAll('#detailTypeSwitch button').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        const cont = $('detailDurCont'),
+          waitDur = $('detailDurWait'),
+          waitField = $('detailWaitField');
+        if (isW) {
+          cont.style.display = 'none';
+          waitDur.style.display = 'block';
+          waitField.style.display = 'block';
+        } else {
+          cont.style.display = 'block';
+          waitDur.style.display = 'none';
+          waitField.style.display = 'none';
+        }
+        // 如果当前有目标任务，先不保存，等确认
+      });
+    });
+
+    $('detailCancel').onclick = closeDetail;
+    $('detailConfirm').onclick = function() {
+      const t = getTask(detailTargetId);
+      if (!t) { closeDetail(); return; }
+      // 名称
+      t.name = $('detailName').value.trim() || '未命名';
+      // 类型
+      const activeTypeBtn = document.querySelector('#detailTypeSwitch button.active');
+      const newType = activeTypeBtn ? activeTypeBtn.dataset.type : 'continuous';
+      const oldType = t.type;
+      t.type = newType;
+      // 读取对应字段
+      if (newType === 'continuous') {
+        const dur = n($('detailDuration').value);
+        t.duration = Math.max(1, dur);
+        t.startWork = 0;
+        t.wait = 0;
+      } else {
+        const sw = n($('detailStartWork').value);
+        const wa = n($('detailWait').value);
+        t.startWork = Math.max(1, sw);
+        t.wait = Math.max(1, wa);
+        t.duration = 0;
+      }
+      t.lockedStart = null;
+      closeDetail();
+      scheduleTasks(false);
+      toast('任务已更新');
+    };
+    $('detailModal').onclick = e => { if (e.target.id === 'detailModal') closeDetail(); };
+
+    // ---- 事件绑定（任务列表） ----
+    $('taskList').addEventListener('input', e => {
+      const card = e.target.closest('.task-card');
+      if (!card) return;
+      const t = getTask(card.dataset.id);
+      if (!t) return;
+      const f = e.target.dataset.field;
+      if (!f) return;
+      if (['duration', 'startWork', 'wait'].includes(f)) t[f] = n(e.target.value);
+      else t[f] = e.target.value;
+      t.lockedStart = null;
+      skipTaskRender = true;
+      scheduleTasks(false);
+      skipTaskRender = false;
+    });
+
+    $('taskList').addEventListener('click', e => {
+      const card = e.target.closest('.task-card');
+      if (!card) return;
+      const t = getTask(card.dataset.id);
+      if (!t) return;
+      if (e.target.dataset.type) {
+        t.type = e.target.dataset.type;
+        if (t.type === 'waiting') { t.startWork = Math.max(1, t.startWork || 1);
+          t.wait = Math.max(1, t.wait || 10);
+          t.duration = 0 } else { t.duration = Math.max(1, t.duration || t.startWork + t.wait || 5);
+          t.startWork = 0;
+          t.wait = 0 }
+        t.lockedStart = null;
+        scheduleTasks(false);
+      }
+      if (e.target.dataset.del) {
+        tasks = tasks.filter(x => x.id !== e.target.dataset.del);
+        tasks.forEach(x => x.deps = (x.deps || []).filter(id => id !== e.target.dataset.del));
+        scheduleTasks(false);
+      }
+      if (e.target.closest('.deps-picker')) {
+        const btn = e.target.closest('.deps-picker');
+        depsTargetId = btn.dataset.target;
+        openDepsPicker(depsTargetId);
+      }
+    });
+
+    // ---- 前置任务选择器 ----
+    function openDepsPicker(taskId) {
+      const t = getTask(taskId);
+      if (!t) return;
+      const modal = $('depsModal');
+      const list = $('depsModalList');
+      $('depsModalTitle').textContent = `前置任务 · ${esc(t.name)}`;
+      $('depsModalDesc').textContent = '勾选需要前置的任务，完成后点击确认。';
+      const others = tasks.filter(x => x.id !== taskId);
+      list.innerHTML = others.map(o => {
+        const checked = t.deps.includes(o.id) ? 'checked' : '';
+        return `<div class="dep-chip"><input type="checkbox" id="dep_${o.id}" value="${o.id}" ${checked}><label for="dep_${o.id}">${esc(o.name)}</label></div>`;
+      }).join('') || '<p style="color:var(--muted);font-size:13px;padding:12px 0;">暂无其他任务可设为前置</p>';
+      modal.classList.add('show');
+      depsTargetId = taskId;
+    }
+
+    function closeDepsPicker() { $('depsModal').classList.remove('show');
+      depsTargetId = null; }
+
+    $('depsCancel').onclick = closeDepsPicker;
+    $('depsConfirm').onclick = () => {
+      const t = getTask(depsTargetId);
+      if (!t) { closeDepsPicker(); return; }
+      const checks = document.querySelectorAll('#depsModalList input[type=checkbox]:checked');
+      t.deps = Array.from(checks).map(c => c.value);
+      t.lockedStart = null;
+      closeDepsPicker();
+      scheduleTasks(false);
+      toast('已更新前置任务');
+    };
+    $('depsModal').onclick = e => { if (e.target.id === 'depsModal') closeDepsPicker(); };
+
+    // ---- 其他按钮 ----
+    $('addTask').onclick = () => {
+      tasks.push({ id: uid(), name: '新任务', type: 'continuous', duration: 5, startWork: 0, wait: 0, deps: [],
+        lockedStart: null, lane: null });
+      scheduleTasks(false);
+      toast('已新增任务')
+    };
+    // 自动排序按钮现在在时间轴工具栏，事件绑定
+    $('autoSchedule').onclick = () => { scheduleTasks(true);
+      toast('已自动排序') };
+    $('clearAll').onclick = showConfirm;
+    $('cancelClear').onclick = hideConfirm;
+    $('confirmClear').onclick = () => { tasks = [];
+      hideConfirm();
+      scheduleTasks(true);
+      toast('已清空') };
+    $('confirmModal').onclick = e => { if (e.target.id === 'confirmModal') hideConfirm() };
+
+    // ---- 缩放 ----
+    $('scale').oninput = e => {
+      pxPerMinute = Number(e.target.value);
+      document.documentElement.style.setProperty('--ppm', pxPerMinute + 'px');
+      $('scaleText').textContent = pxPerMinute + ' px/分';
+      renderTimeline();
+    };
+    $('fit').onclick = () => {
+      if (!schedule) return;
+      const view = $('timelineScroll').clientHeight - 70;
+      const max = Math.max(40, schedule.makespan + 8);
+      pxPerMinute = Math.max(3, Math.min(18, Math.floor(view / max)));
+      $('scale').value = pxPerMinute;
+      $('scaleText').textContent = pxPerMinute + ' px/分';
+      renderTimeline();
+    };
+
+    // ---- Tab切换 ----
+    document.querySelectorAll('.tab').forEach(b => b.onclick = () => setTab(b.dataset.tab));
+    window.addEventListener('resize', () => renderTimeline());
+
+    // ---- 启动 ----
+    scheduleTasks(true);
+  </script>
+</body>
+</html>
