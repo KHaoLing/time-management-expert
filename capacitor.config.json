@@ -1,9 +1,0 @@
-{
-  "appId": "com.parallel.scheduler",
-  "appName": "并行任务排程器",
-  "webDir": "www",
-  "bundledWebRuntime": false,
-  "android": {
-    "backgroundColor": "#f6f7fb"
-  }
-}
