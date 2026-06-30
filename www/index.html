@@ -25,6 +25,7 @@
       --lane:80px;
       --topbar:38px;
       --ppm:8px;
+      --safe-top:max(22px,env(safe-area-inset-top,0px));
       font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
     }
     *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -33,7 +34,7 @@
     input[type=number]{-moz-appearance:textfield;appearance:textfield}
     input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
     .phone{height:100dvh;display:flex;flex-direction:column;background:radial-gradient(circle at 15% -10%,rgba(49,94,251,.14),transparent 34%),radial-gradient(circle at 100% 0%,rgba(16,185,129,.10),transparent 28%),var(--bg)}
-    .app-header{height:var(--header);padding:10px 14px 8px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex:0 0 var(--header)}
+    .app-header{height:calc(var(--header) + var(--safe-top));padding:calc(10px + var(--safe-top)) 14px 8px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex:0 0 calc(var(--header) + var(--safe-top))}
     .title{min-width:0}.title h1{margin:0;font-size:17px;letter-spacing:-.03em;line-height:1.1}.title span{display:block;color:var(--muted);font-size:11px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .header-stat{display:flex;gap:6px;align-items:center;flex-shrink:0}.mini{background:rgba(255,255,255,.86);border:1px solid var(--line);box-shadow:0 8px 18px rgba(15,23,42,.06);border-radius:12px;padding:6px 8px;min-width:54px;text-align:center}.mini b{display:block;font-size:13px}.mini small{display:block;color:var(--muted);font-size:9px;margin-top:1px}
     .screen{display:none;flex:1;min-height:0;padding:0 12px calc(var(--bottom) + env(safe-area-inset-bottom));overflow:auto}.screen.active{display:block}
@@ -55,7 +56,7 @@
     .dep-grid{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;padding:8px;background:#f8fafc;border-radius:12px}
     .dep-chip{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 9px;color:#334155;font-size:12px;font-weight:800}.dep-chip input{width:auto;height:auto;accent-color:var(--primary);margin:0}.dep-empty{font-size:12px;color:var(--muted);padding:6px 0}
     .hint{margin:10px 0 0;padding:10px 12px;border-radius:14px;background:#fff;border:1px dashed #cbd5e1;color:var(--muted);font-size:12px;line-height:1.55}
-    .timeline-wrap{height:calc(100dvh - var(--header) - var(--bottom) - 72px);min-height:420px;margin-top:8px;border-radius:20px;overflow:hidden;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow)}
+    .timeline-wrap{height:calc(100dvh - var(--header) - var(--safe-top) - var(--bottom) - 72px);min-height:420px;margin-top:8px;border-radius:20px;overflow:hidden;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow)}
     .timeline-tools{display:flex;align-items:center;gap:8px;padding:8px 10px;border-bottom:1px solid var(--line);background:#fff}.timeline-tools label{font-size:11px;color:var(--muted);font-weight:900}.timeline-tools input[type=range]{width:118px;height:auto;padding:0;box-shadow:none}.timeline-tools .scale-text{font-size:11px;color:var(--muted);font-weight:800;min-width:54px}.timeline-tools .small-btn{border:1px solid var(--line);background:#fff;color:#475569;border-radius:10px;padding:7px 9px;font-size:12px;font-weight:900;box-shadow:none}
     .timeline-tools .primary-btn{border:0;border-radius:10px;background:var(--primary);color:#fff;padding:7px 12px;font-size:12px;font-weight:900;box-shadow:0 6px 14px rgba(49,94,251,.16)}
     .timeline-scroll{height:calc(100% - 45px);overflow:auto;background:#fff;position:relative}.timeline-canvas{position:relative;min-height:100%;user-select:none}.lane-head{position:sticky;top:0;height:var(--topbar);z-index:25;background:rgba(248,250,252,.96);border-bottom:1px solid var(--line2);backdrop-filter:blur(8px)}.lane-label{position:absolute;top:0;height:var(--topbar);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#475569;border-left:1px solid var(--line);background:rgba(248,250,252,.96)}.axis-head{position:sticky;left:0;top:0;width:var(--axis);height:var(--topbar);z-index:30;background:#f8fafc;border-right:1px solid var(--line2);display:flex;align-items:center;justify-content:center;font-size:11px;color:#64748b;font-weight:900}
@@ -64,8 +65,9 @@
     .task-block{position:absolute;border-radius:12px;border:1.5px solid var(--task-color);min-height:26px;overflow:hidden;background:#fff;box-shadow:0 6px 14px rgba(15,23,42,.12);z-index:10;touch-action:none}.task-block.dragging{opacity:.9;z-index:30;box-shadow:0 18px 34px rgba(15,23,42,.24)}.task-block.continuous{background:linear-gradient(180deg,var(--task-color),var(--task-dark));color:white}.task-block.waiting{color:#0f172a}.wait-solid,.wait-gradient{position:absolute;left:0;right:0;pointer-events:none}.wait-solid{top:0;background:var(--task-color);opacity:.95}.wait-gradient{bottom:0;background:linear-gradient(180deg,rgba(var(--task-rgb),.55),rgba(var(--task-rgb),.15) 45%,rgba(255,255,255,.98) 100%)}.start-handle{position:absolute;left:0;right:0;height:14px;transform:translateY(-7px);z-index:8;cursor:ns-resize}.start-handle:before{content:"";position:absolute;left:10px;right:10px;top:6px;border-top:2px dashed rgba(15,23,42,.45)}.resize-handle{position:absolute;left:0;right:0;bottom:0;height:16px;z-index:8;cursor:ns-resize;background:linear-gradient(180deg,transparent,rgba(15,23,42,.12))}.resize-handle:after{content:"";position:absolute;left:50%;bottom:5px;width:28px;height:3px;transform:translateX(-50%);border-radius:99px;background:rgba(255,255,255,.72)}.waiting .resize-handle:after{background:rgba(15,23,42,.25)}.block-content{position:relative;z-index:4;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;pointer-events:none;overflow:hidden}.block-title{font-size:11px;font-weight:900;line-height:1.2;writing-mode:vertical-rl;text-orientation:upright;letter-spacing:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-height:100%;display:flex;align-items:center;justify-content:center;padding:2px 0}.task-block.continuous .block-title{color:white}.task-block.waiting .block-title{color:#172033}
     .tabbar{position:fixed;left:0;right:0;bottom:0;height:calc(var(--bottom) + env(safe-area-inset-bottom));padding:8px 16px calc(8px + env(safe-area-inset-bottom));display:grid;grid-template-columns:1fr 1fr;gap:10px;background:rgba(255,255,255,.92);backdrop-filter:blur(16px);border-top:1px solid var(--line);z-index:100}.tab{border:0;border-radius:16px;background:#f1f5f9;color:#64748b;font-weight:900;display:flex;align-items:center;justify-content:center;gap:7px}.tab.active{background:var(--primary);color:white;box-shadow:0 12px 24px rgba(49,94,251,.22)}
     .modal{position:fixed;inset:0;background:rgba(15,23,42,.36);display:none;align-items:center;justify-content:center;padding:20px;z-index:150}.modal.show{display:flex}.modal-card{width:min(360px,100%);border-radius:20px;background:#fff;box-shadow:0 28px 70px rgba(15,23,42,.28);padding:18px;border:1px solid var(--line)}.modal-card h3{margin:0 0 8px;font-size:18px}.modal-card p{margin:0;color:var(--muted);font-size:13px;line-height:1.55}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}.modal-actions button{border-radius:12px;border:1px solid var(--line);padding:9px 12px;font-weight:900}.modal-actions .cancel{background:#fff;color:#475569}.modal-actions .danger{background:#dc2626;color:#fff;border-color:#dc2626}
+    .nonoptimal-banner{position:fixed;left:12px;right:12px;bottom:calc(var(--bottom) + env(safe-area-inset-bottom) + 12px);z-index:130;display:none;align-items:center;justify-content:center;border:1px solid #fed7aa;background:#fff7ed;color:#9a3412;border-radius:14px;padding:10px 12px;font-size:13px;font-weight:900;box-shadow:0 14px 34px rgba(15,23,42,.14)}.nonoptimal-banner.show{display:flex}
     .toast{position:fixed;left:50%;bottom:calc(var(--bottom) + 14px);transform:translateX(-50%) translateY(12px);background:rgba(15,23,42,.94);color:white;border-radius:999px;padding:10px 14px;font-size:13px;font-weight:900;box-shadow:0 14px 34px rgba(15,23,42,.24);opacity:0;pointer-events:none;transition:.18s;z-index:200}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-    .detail-overlay{display:none;position:fixed;inset:0;z-index:140;background:rgba(15,23,42,.28);padding:58px 14px 20px;align-items:flex-start;justify-content:center}.detail-overlay.show{display:flex}
+    .detail-overlay{display:none;position:fixed;inset:0;z-index:140;background:rgba(15,23,42,.28);padding:calc(58px + var(--safe-top)) 14px 20px;align-items:flex-start;justify-content:center}.detail-overlay.show{display:flex}
     .detail-card{width:min(400px,100%);border-radius:20px;background:#fff;box-shadow:0 28px 70px rgba(15,23,42,.28);padding:16px;border:1px solid var(--line);animation:detailSlide .22s ease}
     @keyframes detailSlide{from{opacity:0;transform:translateY(-14px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
     .detail-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.detail-head h3{margin:0;font-size:16px}
@@ -113,6 +115,8 @@
   </nav>
 </div>
 
+<div class="nonoptimal-banner" id="nonOptimalBanner">非最优规划</div>
+
 <div class="detail-overlay" id="detailOverlay">
   <div class="detail-card">
     <div class="detail-head">
@@ -153,10 +157,13 @@ let tasks=[
   {id:'t5',name:'扔垃圾',type:'continuous',duration:6,startWork:0,wait:0,deps:[],lockedStart:null,lane:null},
   {id:'t6',name:'拌木耳',type:'continuous',duration:5,startWork:0,wait:0,deps:['t4'],lockedStart:null,lane:null}
 ];
-let schedule=null;let pxPerMinute=8;let toastTimer=null;let activeScreen='task';let drag=null;let skipTaskRender=false;let openDepPanels=new Set();let detailTaskId=null;
+let schedule=null;let pxPerMinute=8;let toastTimer=null;let activeScreen='task';let drag=null;let skipTaskRender=false;let openDepPanels=new Set();let detailTaskId=null;let optimalMakespan=null;let longPressTimer=null;let lastLaneWidth=80;
 const $=id=>document.getElementById(id);
 function uid(){return 't'+(idSeed++);}function n(v,f=0){const x=Number(v);return Number.isFinite(x)?Math.max(0,Math.round(x)):f;}function taskTotal(t){return t.type==='waiting'?Math.max(1,n(t.startWork)+n(t.wait)):Math.max(1,n(t.duration,1));}function activeDur(t){return t.type==='waiting'?n(t.startWork):Math.max(1,n(t.duration,1));}function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}function dark(hex){const c=hex.replace('#','');return '#'+[0,2,4].map(i=>Math.max(0,Math.round(parseInt(c.slice(i,i+2),16)*.82)).toString(16).padStart(2,'0')).join('');}
 function toast(msg){const el=$('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),1500);}function getTask(id){return tasks.find(t=>t.id===id);}function depNames(t){return (t.deps||[]).map(id=>getTask(id)?.name).filter(Boolean);}function intervalsOverlap(a1,a2,b1,b2){return Math.max(a1,b1)<Math.min(a2,b2);}function formatMin(m){if(m<60)return m+'′';const h=Math.floor(m/60),r=m%60;return r?h+'h'+r:h+'h';}function tickStep(maxEnd){const steps=[5,10,15,30,60,120,180,360];return steps.find(s=>s*pxPerMinute>=48)||360;}
+function hasManualPlan(){return tasks.some(t=>t.lockedStart!==null&&t.lockedStart!==undefined);}
+function updateNonOptimalBanner(){const el=$('nonOptimalBanner');if(!el||!schedule)return;const show=activeScreen==='timeline'&&optimalMakespan!==null&&hasManualPlan()&&schedule.makespan>optimalMakespan;el.classList.toggle('show',show);if(show)el.textContent='非最优规划：当前完成时间 '+schedule.makespan+'′，最短约 '+optimalMakespan+'′';}
+function getLaneMetrics(laneCount){const scroll=$('timelineScroll');const available=Math.max(260,(scroll&&scroll.clientWidth)||window.innerWidth||360);const axis=44;const minLane=58;const laneWidth=Math.max(minLane,Math.floor((available-axis)/Math.max(1,laneCount)));const blockWidth=Math.max(44,Math.min(58,laneWidth-18));lastLaneWidth=laneWidth;return{axis,laneWidth,blockWidth};}
 
 /* ---- 详情浮窗 ---- */
 function showDetailPanel(taskId){
@@ -213,6 +220,7 @@ function setTab(tab){
   $('screenSubtitle').textContent=tab==='task'?'手机竖屏 · 任务列表':'手机竖屏 · 纵向时间轴';
   if(tab==='timeline')renderTimeline();
   if(tab==='task')renderTasks();
+  updateNonOptimalBanner();
 }
 function showConfirm(){ $('confirmModal').classList.add('show'); }function hideConfirm(){ $('confirmModal').classList.remove('show'); }
 
@@ -247,10 +255,10 @@ function renderTasks(){
 }
 
 /* ---- 调度引擎 ---- */
-function renderStats(){if(!schedule)return;$('totalTime').textContent=schedule.makespan+'′';$('busyTime').textContent=schedule.busy+'′';}
+function renderStats(){if(!schedule)return;$('totalTime').textContent=schedule.makespan+'′';$('busyTime').textContent=schedule.busy+'′';updateNonOptimalBanner();}
 function buildOps(){const ops=[];const final=new Map();const first=new Map();function add(op){ops.push({deps:[],earliest:0,...op});return op.id;}tasks.forEach(t=>{if(t.type==='continuous'){const id=add({id:t.id+':work',taskId:t.id,kind:'work',human:true,duration:Math.max(1,n(t.duration,1))});first.set(t.id,id);final.set(t.id,id);}else{const s=add({id:t.id+':start',taskId:t.id,kind:'start',human:true,duration:n(t.startWork)});const w=add({id:t.id+':wait',taskId:t.id,kind:'wait',human:false,duration:n(t.wait),deps:[s]});first.set(t.id,s);final.set(t.id,w);}});tasks.forEach(t=>{const f=ops.find(o=>o.id===first.get(t.id));(t.deps||[]).forEach(d=>{const depFinal=final.get(d);if(f&&depFinal)f.deps.push(depFinal);});if(f&&t.lockedStart!==null&&t.lockedStart!==undefined)f.earliest=Math.max(f.earliest,n(t.lockedStart));});return{ops,final};}
 function priority(op){const t=getTask(op.taskId);const children=tasks.filter(x=>(x.deps||[]).includes(t.id)).length;if(op.kind==='start')return 10000+n(t.wait)*100+children*160;if(op.kind==='work')return children*300-n(t.duration);return 0;}
-function scheduleTasks(clearLocks=false){if(clearLocks)tasks.forEach(t=>{t.lockedStart=null;t.lane=null});tasks.forEach(t=>{t.duration=n(t.duration);t.startWork=n(t.startWork);t.wait=n(t.wait);});const {ops,final}=buildOps();const opMap=new Map(ops.map(o=>[o.id,o]));const done=new Map();const left=new Set(ops.map(o=>o.id));let human=0,guard=0;function depsDone(op){return op.deps.every(id=>done.has(id));}function ready(op){return Math.max(op.earliest||0,op.deps.reduce((m,id)=>Math.max(m,done.get(id)?.end??0),0));}function put(op,start){done.set(op.id,{...op,start,end:start+Math.max(0,op.duration)});left.delete(op.id);}function flush(){let changed=true;while(changed){changed=false;for(const id of Array.from(left)){const op=opMap.get(id);if(!op.human&&depsDone(op)){put(op,ready(op));changed=true;}}}}while(left.size&&guard++<500){flush();const humanOps=Array.from(left).map(id=>opMap.get(id)).filter(o=>o.human&&depsDone(o));if(!humanOps.length)break;const list=humanOps.map(op=>({op,rt:ready(op),p:priority(op)}));const min=Math.min(...list.map(x=>x.rt));if(human<min)human=min;const pool=list.filter(x=>x.rt<=human+.001);(pool.length?pool:list).sort((a,b)=>b.p-a.p||a.rt-b.rt);const chosen=(pool.length?pool:list)[0].op;const start=Math.max(human,ready(chosen));put(chosen,start);human=start+Math.max(0,chosen.duration);}flush();const items=tasks.map((t,i)=>{const segs=Array.from(done.values()).filter(o=>o.taskId===t.id).sort((a,b)=>a.start-b.start);const start=segs.length?Math.min(...segs.map(s=>s.start)):0;const end=segs.length?Math.max(...segs.map(s=>s.end)):start+taskTotal(t);return{task:t,color:palette[i%palette.length],segments:segs,start,end,lane:0};});assignLanes(items);const makespan=items.reduce((m,x)=>Math.max(m,x.end),0);const busy=Array.from(done.values()).filter(o=>o.human).reduce((s,o)=>s+o.end-o.start,0);schedule={items,makespan,busy};renderAll();}
+function scheduleTasks(clearLocks=false){if(clearLocks)tasks.forEach(t=>{t.lockedStart=null;t.lane=null});tasks.forEach(t=>{t.duration=n(t.duration);t.startWork=n(t.startWork);t.wait=n(t.wait);});const {ops,final}=buildOps();const opMap=new Map(ops.map(o=>[o.id,o]));const done=new Map();const left=new Set(ops.map(o=>o.id));let human=0,guard=0;function depsDone(op){return op.deps.every(id=>done.has(id));}function ready(op){return Math.max(op.earliest||0,op.deps.reduce((m,id)=>Math.max(m,done.get(id)?.end??0),0));}function put(op,start){done.set(op.id,{...op,start,end:start+Math.max(0,op.duration)});left.delete(op.id);}function flush(){let changed=true;while(changed){changed=false;for(const id of Array.from(left)){const op=opMap.get(id);if(!op.human&&depsDone(op)){put(op,ready(op));changed=true;}}}}while(left.size&&guard++<500){flush();const humanOps=Array.from(left).map(id=>opMap.get(id)).filter(o=>o.human&&depsDone(o));if(!humanOps.length)break;const list=humanOps.map(op=>({op,rt:ready(op),p:priority(op)}));const min=Math.min(...list.map(x=>x.rt));if(human<min)human=min;const pool=list.filter(x=>x.rt<=human+.001);(pool.length?pool:list).sort((a,b)=>b.p-a.p||a.rt-b.rt);const chosen=(pool.length?pool:list)[0].op;const start=Math.max(human,ready(chosen));put(chosen,start);human=start+Math.max(0,chosen.duration);}flush();const items=tasks.map((t,i)=>{const segs=Array.from(done.values()).filter(o=>o.taskId===t.id).sort((a,b)=>a.start-b.start);const start=segs.length?Math.min(...segs.map(s=>s.start)):0;const end=segs.length?Math.max(...segs.map(s=>s.end)):start+taskTotal(t);return{task:t,color:palette[i%palette.length],segments:segs,start,end,lane:0};});assignLanes(items);const makespan=items.reduce((m,x)=>Math.max(m,x.end),0);const busy=Array.from(done.values()).filter(o=>o.human).reduce((s,o)=>s+o.end-o.start,0);schedule={items,makespan,busy};if(clearLocks||!hasManualPlan()||optimalMakespan===null)optimalMakespan=makespan;renderAll();updateNonOptimalBanner();}
 function assignLanes(items){const parent=new Map(tasks.map(t=>[t.id,t.id]));function find(id){if(parent.get(id)!==id)parent.set(id,find(parent.get(id)));return parent.get(id);}function union(a,b){const ra=find(a),rb=find(b);if(ra!==rb)parent.set(ra,rb);}tasks.forEach(t=>(t.deps||[]).forEach(d=>union(t.id,d)));const groups=new Map();tasks.forEach(t=>{const r=find(t.id);if(!groups.has(r))groups.set(r,[]);groups.get(r).push(t.id);});const idMap=new Map(items.map(i=>[i.task.id,i]));const depGroups=[];const occ=[];let next=0;for(const g of Array.from(groups.values()).filter(g=>g.length>1)){const groupItems=g.map(id=>idMap.get(id)).filter(Boolean).sort((a,b)=>a.start-b.start);const laneIntervals=[];for(const item of groupItems){let off=0;while(true){const ints=laneIntervals[off]||[];if(!ints.some(iv=>intervalsOverlap(item.start,item.end,iv.start,iv.end))){(laneIntervals[off]||(laneIntervals[off]=[])).push({start:item.start,end:item.end});item.lane=next+off;break;}off++;}}const minLane=next,maxLane=next+laneIntervals.length-1,start=Math.min(...groupItems.map(i=>i.start)),end=Math.max(...groupItems.map(i=>i.end));for(let l=minLane;l<=maxLane;l++){(occ[l]||(occ[l]=[])).push({start,end,box:true});}depGroups.push({ids:g,start,end,minLane,maxLane});next+=laneIntervals.length;}for(const item of items.filter(i=>i.lane===0&&!depGroups.some(g=>g.ids.includes(i.task.id)))){let lane=Number.isInteger(item.task.lane)?item.task.lane:0;while((occ[lane]||[]).some(iv=>intervalsOverlap(item.start,item.end,iv.start,iv.end)))lane++;item.lane=lane;(occ[lane]||(occ[lane]=[])).push({start:item.start,end:item.end});}window.depGroups=depGroups;}
 
 function renderAll(){if(!skipTaskRender)renderTasks();renderStats();renderTimeline();}
@@ -261,14 +269,15 @@ function renderTimeline(){
   const canvas=$('timelineCanvas');
   const maxEnd=Math.max(40,Math.ceil((schedule.makespan+8)/5)*5);
   const laneCount=Math.max(1,Math.max(0,...schedule.items.map(i=>i.lane))+1);
-  const laneWidth=80;
-  const width=44+laneCount*laneWidth;
+  const metrics=getLaneMetrics(laneCount);
+  const laneWidth=metrics.laneWidth;
+  const width=metrics.axis+laneCount*laneWidth;
   const height=38+maxEnd*pxPerMinute+40;
   canvas.style.width=width+'px';
   canvas.style.height=height+'px';
   canvas.innerHTML=`<div class="lane-head" style="width:${width}px"><div class="axis-head">时间</div></div>`;
   for(let l=0;l<laneCount;l++){
-    canvas.innerHTML+=`<div class="lane-bg" style="left:${44+l*laneWidth}px;width:${laneWidth}px"></div><div class="lane-label" style="left:${44+l*laneWidth}px;width:${laneWidth}px">行 ${l+1}</div>`;
+    canvas.innerHTML+=`<div class="lane-bg" style="left:${metrics.axis+l*laneWidth}px;width:${laneWidth}px"></div><div class="lane-label" style="left:${metrics.axis+l*laneWidth}px;width:${laneWidth}px">行 ${l+1}</div>`;
   }
   const step=tickStep(maxEnd);
   for(let m=0;m<=maxEnd;m+=step){
@@ -277,7 +286,7 @@ function renderTimeline(){
     canvas.innerHTML+=`<div class="time-tick ${major?'major':''}" style="top:${y}px"><div class="tick-label">${formatMin(m)}</div></div>`;
   }
   for(const g of window.depGroups||[]){
-    const left=44+g.minLane*laneWidth+4,top=38+g.start*pxPerMinute-6,w=(g.maxLane-g.minLane+1)*laneWidth-8,h=(g.end-g.start)*pxPerMinute+12;
+    const left=metrics.axis+g.minLane*laneWidth+4,top=38+g.start*pxPerMinute-6,w=(g.maxLane-g.minLane+1)*laneWidth-8,h=(g.end-g.start)*pxPerMinute+12;
     canvas.innerHTML+=`<div class="dep-box" style="left:${left}px;top:${Math.max(38,top)}px;width:${w}px;height:${Math.max(28,h)}px"></div>`;
   }
   for(const item of schedule.items)renderBlock(canvas,item);
@@ -285,9 +294,10 @@ function renderTimeline(){
 
 function renderBlock(canvas,item){
   const {task,color,start,end,lane}=item;
-  const laneWidth=80;
-  const blockWidth=52;
-  const left=44+lane*laneWidth+(laneWidth-blockWidth)/2;
+  const metrics=getLaneMetrics(Math.max(1,Math.max(0,...schedule.items.map(i=>i.lane))+1));
+  const laneWidth=metrics.laneWidth;
+  const blockWidth=metrics.blockWidth;
+  const left=metrics.axis+lane*laneWidth+(laneWidth-blockWidth)/2;
   const top=38+start*pxPerMinute;
   const w=blockWidth;
   const h=Math.max(28,(end-start)*pxPerMinute);
@@ -317,12 +327,24 @@ function attachBlock(block,item){
   block.addEventListener('pointerdown',e=>{
     const task=item.task;
     const mode=e.target.classList.contains('resize-handle')?'resize':e.target.classList.contains('start-handle')?'start':'drag';
-    drag={mode,id:task.id,sx:e.clientX,sy:e.clientY,top:parseFloat(block.style.top),left:parseFloat(block.style.left),height:parseFloat(block.style.height),lane:item.lane,start:item.start,locked:task.lockedStart,taskLane:task.lane,startWork:n(task.startWork),wait:n(task.wait),total:taskTotal(task),block};
+    clearTimeout(longPressTimer);
+    drag={mode,id:task.id,sx:e.clientX,sy:e.clientY,top:parseFloat(block.style.top),left:parseFloat(block.style.left),height:parseFloat(block.style.height),lane:item.lane,start:item.start,locked:task.lockedStart,taskLane:task.lane,startWork:n(task.startWork),wait:n(task.wait),total:taskTotal(task),block,longOpened:false};
     block.classList.add('dragging');block.setPointerCapture(e.pointerId);e.preventDefault();
+    if(mode==='drag'){
+      longPressTimer=setTimeout(()=>{
+        if(!drag||drag.id!==task.id||drag.mode!=='drag'||drag.longOpened)return;
+        drag.longOpened=true;
+        block.classList.remove('dragging');
+        try{block.releasePointerCapture(e.pointerId)}catch{}
+        showDetailPanel(task.id);
+      },520);
+    }
   });
   block.addEventListener('pointermove',e=>{
     if(!drag||drag.id!==item.task.id)return;
     const dy=e.clientY-drag.sy,dx=e.clientX-drag.sx;
+    if(Math.abs(dx)+Math.abs(dy)>8)clearTimeout(longPressTimer);
+    if(drag.longOpened)return;
     if(drag.mode==='drag'){block.style.top=Math.max(38,drag.top+dy)+'px';block.style.left=Math.max(44,drag.left+dx)+'px';}
     else if(drag.mode==='resize'){const total=Math.max(item.task.type==='waiting'?n(item.task.startWork):1,Math.round((drag.height+dy)/pxPerMinute));block.style.height=Math.max(28,total*pxPerMinute)+'px';if(item.task.type==='waiting')updateWaitVisual(block,n(item.task.startWork),total);}
     else if(drag.mode==='start'){const sw=Math.max(0,Math.round((drag.startWork*pxPerMinute+dy)/pxPerMinute));const total=sw+drag.wait;block.style.height=Math.max(28,total*pxPerMinute)+'px';updateWaitVisual(block,sw,total);}
@@ -333,15 +355,19 @@ function attachBlock(block,item){
 
 function finishDrag(e,item){
   if(!drag||drag.id!==item.task.id)return;
+  clearTimeout(longPressTimer);
   const task=item.task,block=drag.block;
   block.classList.remove('dragging');
   try{block.releasePointerCapture(e.pointerId)}catch{}
+  if(drag.longOpened){drag=null;return;}
   /* 轻触判定：位移 < 8px 视为点击 */
   const dist=Math.abs(e.clientX-drag.sx)+Math.abs(e.clientY-drag.sy);
   if(dist<8){drag=null;showDetailPanel(task.id);return;}
   if(drag.mode==='drag'){
     const newStart=Math.max(0,Math.round((parseFloat(block.style.top)-38)/pxPerMinute));
-    let newLane=Math.max(0,Math.round((parseFloat(block.style.left)-44-14)/80));
+    const laneWidth=lastLaneWidth||80;
+    const metrics=getLaneMetrics(Math.max(1,Math.max(0,...schedule.items.map(i=>i.lane))+1));
+    let newLane=Math.max(0,Math.round((parseFloat(block.style.left)-metrics.axis-(laneWidth-metrics.blockWidth)/2)/laneWidth));
     const isGroup=(window.depGroups||[]).some(g=>g.ids.includes(task.id));
     if(isGroup)newLane=item.lane;
     const len=item.end-item.start;
@@ -405,12 +431,12 @@ $('addTask').onclick=()=>{tasks.push({id:uid(),name:'新任务',type:'continuous
 $('autoSchedule').onclick=()=>{hideDetailPanel();openDepPanels.clear();scheduleTasks(true);toast('已自动排序')};
 $('clearAll').onclick=showConfirm;
 $('cancelClear').onclick=hideConfirm;
-$('confirmClear').onclick=()=>{tasks=[];openDepPanels.clear();hideDetailPanel();hideConfirm();scheduleTasks(true);toast('已清空')};
+$('confirmClear').onclick=()=>{tasks=[];openDepPanels.clear();hideDetailPanel();hideConfirm();optimalMakespan=null;scheduleTasks(true);toast('已清空')};
 $('confirmModal').onclick=e=>{if(e.target.id==='confirmModal')hideConfirm()};
 $('scale').oninput=e=>{pxPerMinute=Number(e.target.value);document.documentElement.style.setProperty('--ppm',pxPerMinute+'px');$('scaleText').textContent=pxPerMinute+' px/分';renderTimeline();};
 $('fit').onclick=()=>{if(!schedule)return;const view=$('timelineScroll').clientHeight-70;const max=Math.max(40,schedule.makespan+8);pxPerMinute=Math.max(3,Math.min(18,Math.floor(view/max)));$('scale').value=pxPerMinute;$('scaleText').textContent=pxPerMinute+' px/分';renderTimeline();};
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
-window.addEventListener('resize',()=>renderTimeline());
+window.addEventListener('resize',()=>{renderTimeline();updateNonOptimalBanner();});
 scheduleTasks(true);
 </script>
 </body>
