@@ -1,8 +1,8 @@
 {
   "name": "parallel-task-scheduler-apk",
-  "version": "2.7.0",
+  "version": "2.7.1",
   "private": true,
-  "description": "并行任务排程器 Android APK wrapper built from a single HTML app.",
+  "description": "并行任务排程器 Android APK wrapper built from a single HTML app. Includes timeline task detail popup editing.",
   "scripts": {
     "build": "echo \"Static HTML app: no web build step required.\"",
     "cap:add:android": "cap add android",
