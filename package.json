@@ -1,8 +1,8 @@
 {
   "name": "time-management-master-apk",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "private": true,
-  "description": "时间管理大师 Android APK wrapper. Lightweight vertical timeline parallel task scheduler with local persistence.",
+  "description": "时间管理大师 Android APK wrapper. Icon-fixed lightweight vertical timeline scheduler with local persistence.",
   "scripts": {
     "build": "echo \"Static HTML app: no web build step required.\"",
     "cap:add:android": "cap add android",
