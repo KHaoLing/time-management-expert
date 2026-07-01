@@ -49,6 +49,6 @@ jobs:
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: time-management-master-v3.0-debug-apk
+          name: time-master-v3.0.1-icon-fixed-debug-apk
           path: android/app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
