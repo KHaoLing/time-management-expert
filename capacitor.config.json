@@ -1,6 +1,6 @@
 {
-  "appId": "com.parallel.scheduler",
-  "appName": "并行任务排程器",
+  "appId": "com.xsy.timemaster",
+  "appName": "时间管理大师",
   "webDir": "www",
   "bundledWebRuntime": false,
   "android": {
