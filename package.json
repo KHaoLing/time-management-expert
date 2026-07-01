@@ -1,14 +1,15 @@
 {
   "name": "time-management-master-apk",
-  "version": "3.0.1",
+  "version": "1.0.1",
   "private": true,
-  "description": "时间管理大师 Android APK wrapper. Icon-fixed lightweight vertical timeline scheduler with local persistence.",
+  "description": "时间管理大师 Android release package. Signed release APK/AAB workflow with local persistence and fixed icon.",
   "scripts": {
     "build": "echo \"Static HTML app: no web build step required.\"",
     "cap:add:android": "cap add android",
     "cap:copy": "cap copy android",
     "assets:android": "capacitor-assets generate --android",
-    "android:debug": "cd android && ./gradlew assembleDebug"
+    "android:debug": "cd android && ./gradlew assembleDebug",
+    "android:release": "cd android && ./gradlew assembleRelease bundleRelease"
   },
   "dependencies": {
     "@capacitor/android": "^7.0.0",
