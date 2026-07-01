@@ -61,8 +61,8 @@
     .timeline-tools .primary-btn{border:0;border-radius:10px;background:var(--primary);color:#fff;padding:7px 12px;font-size:12px;font-weight:900;box-shadow:0 6px 14px rgba(49,94,251,.16)}
     .timeline-scroll{height:calc(100% - 45px);overflow:auto;background:#fff;position:relative}.timeline-canvas{position:relative;min-height:100%;user-select:none}.lane-head{position:sticky;top:0;height:var(--topbar);z-index:25;background:rgba(248,250,252,.96);border-bottom:1px solid var(--line2);backdrop-filter:blur(8px)}.lane-label{position:absolute;top:0;height:var(--topbar);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#475569;border-left:1px solid var(--line);background:rgba(248,250,252,.96)}.axis-head{position:sticky;left:0;top:0;width:var(--axis);height:var(--topbar);z-index:30;background:#f8fafc;border-right:1px solid var(--line2);display:flex;align-items:center;justify-content:center;font-size:11px;color:#64748b;font-weight:900}
     .time-tick{position:absolute;left:0;width:100%;border-top:1px solid #eef2f7;pointer-events:none}.time-tick.major{border-top-color:#dbe3ee}.tick-label{position:sticky;left:0;z-index:5;width:var(--axis);transform:translateY(-50%);font-size:10px;font-weight:800;color:#64748b;background:rgba(255,255,255,.88);padding-left:5px;border-right:1px solid var(--line)}
-    .lane-bg{position:absolute;top:var(--topbar);bottom:0;border-left:1px solid #eef2f7;background:rgba(248,250,252,.32);pointer-events:none}.lane-bg:nth-child(odd){background:#fff}.dep-box{position:absolute;border:1px dashed rgba(49,94,251,.65);border-radius:16px;background:rgba(49,94,251,.025);pointer-events:none;z-index:6}
-    .task-block{position:absolute;border-radius:12px;border:1.5px solid var(--task-color);min-height:26px;overflow:hidden;background:#fff;box-shadow:0 6px 14px rgba(15,23,42,.12);z-index:10;touch-action:none}.task-block.dragging{opacity:.9;z-index:30;box-shadow:0 18px 34px rgba(15,23,42,.24)}.task-block.continuous{background:linear-gradient(180deg,var(--task-color),var(--task-dark));color:white}.task-block.waiting{color:#0f172a}.wait-solid,.wait-gradient{position:absolute;left:0;right:0;pointer-events:none}.wait-solid{top:0;background:var(--task-color);opacity:.95}.wait-gradient{bottom:0;background:linear-gradient(180deg,rgba(var(--task-rgb),.55),rgba(var(--task-rgb),.15) 45%,rgba(255,255,255,.98) 100%)}.start-handle{position:absolute;left:0;right:0;height:14px;transform:translateY(-7px);z-index:8;cursor:ns-resize}.start-handle:before{content:"";position:absolute;left:10px;right:10px;top:6px;border-top:2px dashed rgba(15,23,42,.45)}.resize-handle{position:absolute;left:0;right:0;bottom:0;height:16px;z-index:8;cursor:ns-resize;background:linear-gradient(180deg,transparent,rgba(15,23,42,.12))}.resize-handle:after{content:"";position:absolute;left:50%;bottom:5px;width:28px;height:3px;transform:translateX(-50%);border-radius:99px;background:rgba(255,255,255,.72)}.waiting .resize-handle:after{background:rgba(15,23,42,.25)}.block-content{position:relative;z-index:4;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;pointer-events:none;overflow:hidden}.block-title{font-size:11px;font-weight:900;line-height:1.2;writing-mode:vertical-rl;text-orientation:upright;letter-spacing:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-height:100%;display:flex;align-items:center;justify-content:center;padding:2px 0}.task-block.continuous .block-title{color:white}.task-block.waiting .block-title{color:#172033}
+    .lane-bg{position:absolute;top:var(--topbar);bottom:0;border-left:1px solid #eef2f7;background:rgba(248,250,252,.32);pointer-events:none}.lane-bg:nth-child(odd){background:#fff}.dep-box{position:absolute;border:1px dashed rgba(49,94,251,.72);border-radius:16px;background:rgba(49,94,251,.025);pointer-events:auto;touch-action:none;cursor:grab;z-index:6}.dep-box.dragging{cursor:grabbing;border-color:rgba(49,94,251,.95);background:rgba(49,94,251,.055);z-index:28}
+    .task-block{position:absolute;border-radius:12px;border:1.5px solid var(--task-color);min-height:26px;overflow:hidden;background:#fff;box-shadow:0 6px 14px rgba(15,23,42,.12);z-index:10;touch-action:none}.task-block.dragging{opacity:.9;z-index:30;box-shadow:0 18px 34px rgba(15,23,42,.24)}.task-block.continuous{background:linear-gradient(180deg,var(--task-color),var(--task-dark));color:white}.task-block.waiting{color:#0f172a}.wait-solid,.wait-gradient{position:absolute;left:0;right:0;pointer-events:none}.wait-solid{top:0;background:var(--task-color);opacity:.95}.wait-gradient{bottom:0;background:linear-gradient(180deg,rgba(var(--task-rgb),.48),var(--task-soft) 100%)}.start-handle{position:absolute;left:0;right:0;height:14px;transform:translateY(-7px);z-index:8;cursor:ns-resize}.start-handle:before{content:"";position:absolute;left:10px;right:10px;top:6px;border-top:2px dashed rgba(15,23,42,.45)}.resize-handle{position:absolute;left:0;right:0;bottom:0;height:16px;z-index:8;cursor:ns-resize;background:linear-gradient(180deg,transparent,rgba(15,23,42,.12))}.resize-handle:after{content:"";position:absolute;left:50%;bottom:5px;width:28px;height:3px;transform:translateX(-50%);border-radius:99px;background:rgba(255,255,255,.72)}.waiting .resize-handle:after{background:rgba(15,23,42,.25)}.block-content{position:relative;z-index:4;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;pointer-events:none;overflow:hidden}.block-title{font-size:11px;font-weight:900;line-height:1.2;writing-mode:vertical-rl;text-orientation:upright;letter-spacing:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-height:100%;display:flex;align-items:center;justify-content:center;padding:2px 0}.task-block.continuous .block-title{color:white}.task-block.waiting .block-title{color:#172033}
     .tabbar{position:fixed;left:0;right:0;bottom:0;height:calc(var(--bottom) + env(safe-area-inset-bottom));padding:8px 16px calc(8px + env(safe-area-inset-bottom));display:grid;grid-template-columns:1fr 1fr;gap:10px;background:rgba(255,255,255,.92);backdrop-filter:blur(16px);border-top:1px solid var(--line);z-index:100}.tab{border:0;border-radius:16px;background:#f1f5f9;color:#64748b;font-weight:900;display:flex;align-items:center;justify-content:center;gap:7px}.tab.active{background:var(--primary);color:white;box-shadow:0 12px 24px rgba(49,94,251,.22)}
     .modal{position:fixed;inset:0;background:rgba(15,23,42,.36);display:none;align-items:center;justify-content:center;padding:20px;z-index:150}.modal.show{display:flex}.modal-card{width:min(360px,100%);border-radius:20px;background:#fff;box-shadow:0 28px 70px rgba(15,23,42,.28);padding:18px;border:1px solid var(--line)}.modal-card h3{margin:0 0 8px;font-size:18px}.modal-card p{margin:0;color:var(--muted);font-size:13px;line-height:1.55}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}.modal-actions button{border-radius:12px;border:1px solid var(--line);padding:9px 12px;font-weight:900}.modal-actions .cancel{background:#fff;color:#475569}.modal-actions .danger{background:#dc2626;color:#fff;border-color:#dc2626}
     .nonoptimal-banner{position:fixed;left:12px;right:12px;bottom:calc(var(--bottom) + env(safe-area-inset-bottom) + 12px);z-index:130;display:none;align-items:center;justify-content:center;border:1px solid #fed7aa;background:#fff7ed;color:#9a3412;border-radius:14px;padding:10px 12px;font-size:13px;font-weight:900;box-shadow:0 14px 34px rgba(15,23,42,.14)}.nonoptimal-banner.show{display:flex}
@@ -92,7 +92,6 @@
       <button class="danger" id="clearAll">清空</button>
     </div>
     <div class="task-list" id="taskList"></div>
-    <div class="hint">竖屏版把"时间"改成纵向向下流动。任务列表和时间轴拆成两个页面，用底部按钮切换，适合后续封装 APK。</div>
   </main>
 
   <main id="timelineScreen" class="screen">
@@ -157,13 +156,52 @@ let tasks=[
   {id:'t5',name:'扔垃圾',type:'continuous',duration:6,startWork:0,wait:0,deps:[],lockedStart:null,lane:null},
   {id:'t6',name:'拌木耳',type:'continuous',duration:5,startWork:0,wait:0,deps:['t4'],lockedStart:null,lane:null}
 ];
-let schedule=null;let pxPerMinute=8;let toastTimer=null;let activeScreen='task';let drag=null;let skipTaskRender=false;let openDepPanels=new Set();let detailTaskId=null;let optimalMakespan=null;let longPressTimer=null;let lastLaneWidth=80;
+let schedule=null;let pxPerMinute=8;let toastTimer=null;let activeScreen='task';let drag=null;let groupDrag=null;let skipTaskRender=false;let openDepPanels=new Set();let detailTaskId=null;let optimalMakespan=null;let longPressTimer=null;let lastLaneWidth=80;let loadedSavedState=false;
+const STORAGE_KEY='parallel_task_scheduler_latest_v3';
 const $=id=>document.getElementById(id);
-function uid(){return 't'+(idSeed++);}function n(v,f=0){const x=Number(v);return Number.isFinite(x)?Math.max(0,Math.round(x)):f;}function taskTotal(t){return t.type==='waiting'?Math.max(1,n(t.startWork)+n(t.wait)):Math.max(1,n(t.duration,1));}function activeDur(t){return t.type==='waiting'?n(t.startWork):Math.max(1,n(t.duration,1));}function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}function dark(hex){const c=hex.replace('#','');return '#'+[0,2,4].map(i=>Math.max(0,Math.round(parseInt(c.slice(i,i+2),16)*.82)).toString(16).padStart(2,'0')).join('');}
+function uid(){return 't'+(idSeed++);}function n(v,f=0){const x=Number(v);return Number.isFinite(x)?Math.max(0,Math.round(x)):f;}function taskTotal(t){return t.type==='waiting'?Math.max(1,n(t.startWork)+n(t.wait)):Math.max(1,n(t.duration,1));}function activeDur(t){return t.type==='waiting'?n(t.startWork):Math.max(1,n(t.duration,1));}function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}function dark(hex){const c=hex.replace('#','');return '#'+[0,2,4].map(i=>Math.max(0,Math.round(parseInt(c.slice(i,i+2),16)*.82)).toString(16).padStart(2,'0')).join('');}function mixColor(hex,target='#f8fafc',amount=.78){const a=hex.replace('#',''),b=target.replace('#','');return '#'+[0,2,4].map(i=>{const x=parseInt(a.slice(i,i+2),16),y=parseInt(b.slice(i,i+2),16);return Math.round(x*(1-amount)+y*amount).toString(16).padStart(2,'0')}).join('');}function soft(hex){return mixColor(hex,'#f8fafc',.76);}
 function toast(msg){const el=$('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),1500);}function getTask(id){return tasks.find(t=>t.id===id);}function depNames(t){return (t.deps||[]).map(id=>getTask(id)?.name).filter(Boolean);}function intervalsOverlap(a1,a2,b1,b2){return Math.max(a1,b1)<Math.min(a2,b2);}function formatMin(m){if(m<60)return m+'′';const h=Math.floor(m/60),r=m%60;return r?h+'h'+r:h+'h';}function tickStep(maxEnd){const steps=[5,10,15,30,60,120,180,360];return steps.find(s=>s*pxPerMinute>=48)||360;}
 function hasManualPlan(){return tasks.some(t=>t.lockedStart!==null&&t.lockedStart!==undefined);}
 function updateNonOptimalBanner(){const el=$('nonOptimalBanner');if(!el||!schedule)return;const show=activeScreen==='timeline'&&optimalMakespan!==null&&hasManualPlan()&&schedule.makespan>optimalMakespan;el.classList.toggle('show',show);if(show)el.textContent='非最优规划：当前完成时间 '+schedule.makespan+'′，最短约 '+optimalMakespan+'′';}
 function getLaneMetrics(laneCount){const scroll=$('timelineScroll');const available=Math.max(260,(scroll&&scroll.clientWidth)||window.innerWidth||360);const axis=44;const minLane=58;const laneWidth=Math.max(minLane,Math.floor((available-axis)/Math.max(1,laneCount)));const blockWidth=Math.max(44,Math.min(58,laneWidth-18));lastLaneWidth=laneWidth;return{axis,laneWidth,blockWidth};}
+
+function normalizeSavedTask(t,index){
+  return {
+    id:String(t.id||uid()),
+    name:String(t.name||('任务 '+(index+1))),
+    type:t.type==='waiting'?'waiting':'continuous',
+    duration:n(t.duration,5),
+    startWork:n(t.startWork,0),
+    wait:n(t.wait,0),
+    deps:Array.isArray(t.deps)?t.deps.map(String):[],
+    lockedStart:t.lockedStart===null||t.lockedStart===undefined?null:n(t.lockedStart),
+    lane:t.lane===null||t.lane===undefined?null:n(t.lane)
+  };
+}
+function refreshIdSeed(){
+  let maxId=0;
+  tasks.forEach(t=>{const m=String(t.id||'').match(/^t(\d+)$/);if(m)maxId=Math.max(maxId,Number(m[1]));});
+  idSeed=Math.max(idSeed,maxId+1,tasks.length+1);
+}
+function saveLatestState(){
+  try{
+    const state={version:3,savedAt:Date.now(),idSeed,pxPerMinute,optimalMakespan,tasks:tasks.map(t=>({id:t.id,name:t.name,type:t.type,duration:n(t.duration),startWork:n(t.startWork),wait:n(t.wait),deps:Array.isArray(t.deps)?t.deps:[],lockedStart:t.lockedStart,lane:t.lane}))};
+    localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+  }catch(err){console.warn('保存失败',err);}
+}
+function loadLatestState(){
+  try{
+    const raw=localStorage.getItem(STORAGE_KEY);
+    if(!raw)return false;
+    const state=JSON.parse(raw);
+    if(!state||!Array.isArray(state.tasks))return false;
+    tasks=state.tasks.map(normalizeSavedTask);
+    pxPerMinute=Number.isFinite(Number(state.pxPerMinute))?Math.max(3,Math.min(18,Number(state.pxPerMinute))):pxPerMinute;
+    optimalMakespan=state.optimalMakespan===null||state.optimalMakespan===undefined?null:n(state.optimalMakespan);
+    refreshIdSeed();
+    return true;
+  }catch(err){console.warn('读取保存数据失败，使用默认示例',err);return false;}
+}
 
 /* ---- 详情浮窗 ---- */
 function showDetailPanel(taskId){
@@ -258,8 +296,8 @@ function renderTasks(){
 function renderStats(){if(!schedule)return;$('totalTime').textContent=schedule.makespan+'′';$('busyTime').textContent=schedule.busy+'′';updateNonOptimalBanner();}
 function buildOps(){const ops=[];const final=new Map();const first=new Map();function add(op){ops.push({deps:[],earliest:0,...op});return op.id;}tasks.forEach(t=>{if(t.type==='continuous'){const id=add({id:t.id+':work',taskId:t.id,kind:'work',human:true,duration:Math.max(1,n(t.duration,1))});first.set(t.id,id);final.set(t.id,id);}else{const s=add({id:t.id+':start',taskId:t.id,kind:'start',human:true,duration:n(t.startWork)});const w=add({id:t.id+':wait',taskId:t.id,kind:'wait',human:false,duration:n(t.wait),deps:[s]});first.set(t.id,s);final.set(t.id,w);}});tasks.forEach(t=>{const f=ops.find(o=>o.id===first.get(t.id));(t.deps||[]).forEach(d=>{const depFinal=final.get(d);if(f&&depFinal)f.deps.push(depFinal);});if(f&&t.lockedStart!==null&&t.lockedStart!==undefined)f.earliest=Math.max(f.earliest,n(t.lockedStart));});return{ops,final};}
 function priority(op){const t=getTask(op.taskId);const children=tasks.filter(x=>(x.deps||[]).includes(t.id)).length;if(op.kind==='start')return 10000+n(t.wait)*100+children*160;if(op.kind==='work')return children*300-n(t.duration);return 0;}
-function scheduleTasks(clearLocks=false){if(clearLocks)tasks.forEach(t=>{t.lockedStart=null;t.lane=null});tasks.forEach(t=>{t.duration=n(t.duration);t.startWork=n(t.startWork);t.wait=n(t.wait);});const {ops,final}=buildOps();const opMap=new Map(ops.map(o=>[o.id,o]));const done=new Map();const left=new Set(ops.map(o=>o.id));let human=0,guard=0;function depsDone(op){return op.deps.every(id=>done.has(id));}function ready(op){return Math.max(op.earliest||0,op.deps.reduce((m,id)=>Math.max(m,done.get(id)?.end??0),0));}function put(op,start){done.set(op.id,{...op,start,end:start+Math.max(0,op.duration)});left.delete(op.id);}function flush(){let changed=true;while(changed){changed=false;for(const id of Array.from(left)){const op=opMap.get(id);if(!op.human&&depsDone(op)){put(op,ready(op));changed=true;}}}}while(left.size&&guard++<500){flush();const humanOps=Array.from(left).map(id=>opMap.get(id)).filter(o=>o.human&&depsDone(o));if(!humanOps.length)break;const list=humanOps.map(op=>({op,rt:ready(op),p:priority(op)}));const min=Math.min(...list.map(x=>x.rt));if(human<min)human=min;const pool=list.filter(x=>x.rt<=human+.001);(pool.length?pool:list).sort((a,b)=>b.p-a.p||a.rt-b.rt);const chosen=(pool.length?pool:list)[0].op;const start=Math.max(human,ready(chosen));put(chosen,start);human=start+Math.max(0,chosen.duration);}flush();const items=tasks.map((t,i)=>{const segs=Array.from(done.values()).filter(o=>o.taskId===t.id).sort((a,b)=>a.start-b.start);const start=segs.length?Math.min(...segs.map(s=>s.start)):0;const end=segs.length?Math.max(...segs.map(s=>s.end)):start+taskTotal(t);return{task:t,color:palette[i%palette.length],segments:segs,start,end,lane:0};});assignLanes(items);const makespan=items.reduce((m,x)=>Math.max(m,x.end),0);const busy=Array.from(done.values()).filter(o=>o.human).reduce((s,o)=>s+o.end-o.start,0);schedule={items,makespan,busy};if(clearLocks||!hasManualPlan()||optimalMakespan===null)optimalMakespan=makespan;renderAll();updateNonOptimalBanner();}
-function assignLanes(items){const parent=new Map(tasks.map(t=>[t.id,t.id]));function find(id){if(parent.get(id)!==id)parent.set(id,find(parent.get(id)));return parent.get(id);}function union(a,b){const ra=find(a),rb=find(b);if(ra!==rb)parent.set(ra,rb);}tasks.forEach(t=>(t.deps||[]).forEach(d=>union(t.id,d)));const groups=new Map();tasks.forEach(t=>{const r=find(t.id);if(!groups.has(r))groups.set(r,[]);groups.get(r).push(t.id);});const idMap=new Map(items.map(i=>[i.task.id,i]));const depGroups=[];const occ=[];let next=0;for(const g of Array.from(groups.values()).filter(g=>g.length>1)){const groupItems=g.map(id=>idMap.get(id)).filter(Boolean).sort((a,b)=>a.start-b.start);const laneIntervals=[];for(const item of groupItems){let off=0;while(true){const ints=laneIntervals[off]||[];if(!ints.some(iv=>intervalsOverlap(item.start,item.end,iv.start,iv.end))){(laneIntervals[off]||(laneIntervals[off]=[])).push({start:item.start,end:item.end});item.lane=next+off;break;}off++;}}const minLane=next,maxLane=next+laneIntervals.length-1,start=Math.min(...groupItems.map(i=>i.start)),end=Math.max(...groupItems.map(i=>i.end));for(let l=minLane;l<=maxLane;l++){(occ[l]||(occ[l]=[])).push({start,end,box:true});}depGroups.push({ids:g,start,end,minLane,maxLane});next+=laneIntervals.length;}for(const item of items.filter(i=>i.lane===0&&!depGroups.some(g=>g.ids.includes(i.task.id)))){let lane=Number.isInteger(item.task.lane)?item.task.lane:0;while((occ[lane]||[]).some(iv=>intervalsOverlap(item.start,item.end,iv.start,iv.end)))lane++;item.lane=lane;(occ[lane]||(occ[lane]=[])).push({start:item.start,end:item.end});}window.depGroups=depGroups;}
+function scheduleTasks(clearLocks=false){if(clearLocks)tasks.forEach(t=>{t.lockedStart=null;t.lane=null});tasks.forEach(t=>{t.duration=n(t.duration);t.startWork=n(t.startWork);t.wait=n(t.wait);});const {ops,final}=buildOps();const opMap=new Map(ops.map(o=>[o.id,o]));const done=new Map();const left=new Set(ops.map(o=>o.id));let human=0,guard=0;function depsDone(op){return op.deps.every(id=>done.has(id));}function ready(op){return Math.max(op.earliest||0,op.deps.reduce((m,id)=>Math.max(m,done.get(id)?.end??0),0));}function put(op,start){done.set(op.id,{...op,start,end:start+Math.max(0,op.duration)});left.delete(op.id);}function flush(){let changed=true;while(changed){changed=false;for(const id of Array.from(left)){const op=opMap.get(id);if(!op.human&&depsDone(op)){put(op,ready(op));changed=true;}}}}while(left.size&&guard++<500){flush();const humanOps=Array.from(left).map(id=>opMap.get(id)).filter(o=>o.human&&depsDone(o));if(!humanOps.length)break;const list=humanOps.map(op=>({op,rt:ready(op),p:priority(op)}));const min=Math.min(...list.map(x=>x.rt));if(human<min)human=min;const pool=list.filter(x=>x.rt<=human+.001);(pool.length?pool:list).sort((a,b)=>b.p-a.p||a.rt-b.rt);const chosen=(pool.length?pool:list)[0].op;const start=Math.max(human,ready(chosen));put(chosen,start);human=start+Math.max(0,chosen.duration);}flush();const items=tasks.map((t,i)=>{const segs=Array.from(done.values()).filter(o=>o.taskId===t.id).sort((a,b)=>a.start-b.start);const start=segs.length?Math.min(...segs.map(s=>s.start)):0;const end=segs.length?Math.max(...segs.map(s=>s.end)):start+taskTotal(t);return{task:t,color:palette[i%palette.length],segments:segs,start,end,lane:0};});assignLanes(items);const makespan=items.reduce((m,x)=>Math.max(m,x.end),0);const busy=Array.from(done.values()).filter(o=>o.human).reduce((s,o)=>s+o.end-o.start,0);schedule={items,makespan,busy};if(clearLocks||!hasManualPlan()||optimalMakespan===null)optimalMakespan=makespan;renderAll();updateNonOptimalBanner();saveLatestState();}
+function assignLanes(items){const parent=new Map(tasks.map(t=>[t.id,t.id]));function find(id){if(parent.get(id)!==id)parent.set(id,find(parent.get(id)));return parent.get(id);}function union(a,b){const ra=find(a),rb=find(b);if(ra!==rb)parent.set(ra,rb);}tasks.forEach(t=>(t.deps||[]).forEach(d=>union(t.id,d)));const groups=new Map();tasks.forEach(t=>{const r=find(t.id);if(!groups.has(r))groups.set(r,[]);groups.get(r).push(t.id);});const idMap=new Map(items.map(i=>[i.task.id,i]));const depGroups=[];const occ=[];let next=0;function laneConflict(base,rowCount,start,end){for(let l=base;l<base+rowCount;l++){if((occ[l]||[]).some(iv=>intervalsOverlap(start,end,iv.start,iv.end)))return true;}return false;}for(const g of Array.from(groups.values()).filter(g=>g.length>1)){const groupItems=g.map(id=>idMap.get(id)).filter(Boolean).sort((a,b)=>a.start-b.start);const laneIntervals=[];const offsets=new Map();for(const item of groupItems){let off=0;while(true){const ints=laneIntervals[off]||[];if(!ints.some(iv=>intervalsOverlap(item.start,item.end,iv.start,iv.end))){(laneIntervals[off]||(laneIntervals[off]=[])).push({start:item.start,end:item.end});offsets.set(item.task.id,off);break;}off++;}}const rowCount=Math.max(1,laneIntervals.length);const start=Math.min(...groupItems.map(i=>i.start)),end=Math.max(...groupItems.map(i=>i.end));let preferred=Math.min(...g.map(id=>Number.isInteger(getTask(id)?.lane)?getTask(id).lane:Infinity));let base=Number.isFinite(preferred)?Math.max(0,preferred):next;while(laneConflict(base,rowCount,start,end))base++;for(const item of groupItems)item.lane=base+(offsets.get(item.task.id)||0);const minLane=base,maxLane=base+rowCount-1;for(let l=minLane;l<=maxLane;l++){(occ[l]||(occ[l]=[])).push({start,end,box:true});}depGroups.push({ids:g,start,end,minLane,maxLane});next=Math.max(next,maxLane+1);}for(const item of items.filter(i=>!depGroups.some(g=>g.ids.includes(i.task.id)))){let lane=Number.isInteger(item.task.lane)?item.task.lane:0;while((occ[lane]||[]).some(iv=>intervalsOverlap(item.start,item.end,iv.start,iv.end)))lane++;item.lane=lane;(occ[lane]||(occ[lane]=[])).push({start:item.start,end:item.end});}window.depGroups=depGroups;}
 
 function renderAll(){if(!skipTaskRender)renderTasks();renderStats();renderTimeline();}
 
@@ -287,9 +325,10 @@ function renderTimeline(){
   }
   for(const g of window.depGroups||[]){
     const left=metrics.axis+g.minLane*laneWidth+4,top=38+g.start*pxPerMinute-6,w=(g.maxLane-g.minLane+1)*laneWidth-8,h=(g.end-g.start)*pxPerMinute+12;
-    canvas.innerHTML+=`<div class="dep-box" style="left:${left}px;top:${Math.max(38,top)}px;width:${w}px;height:${Math.max(28,h)}px"></div>`;
+    canvas.innerHTML+=`<div class="dep-box" data-group-index="${(window.depGroups||[]).indexOf(g)}" style="left:${left}px;top:${Math.max(38,top)}px;width:${w}px;height:${Math.max(28,h)}px"></div>`;
   }
   for(const item of schedule.items)renderBlock(canvas,item);
+  attachGroupBoxes(canvas,metrics);
 }
 
 function renderBlock(canvas,item){
@@ -311,6 +350,7 @@ function renderBlock(canvas,item){
   div.style.setProperty('--task-color',color[0]);
   div.style.setProperty('--task-dark',dark(color[0]));
   div.style.setProperty('--task-rgb',color[1]);
+  div.style.setProperty('--task-soft',soft(color[0]));
   if(task.type==='waiting'){
     const p=Math.max(0,Math.min(100,n(task.startWork)/taskTotal(task)*100));
     div.innerHTML+=`<div class="wait-solid" style="height:${p}%"></div><div class="wait-gradient" style="top:${p}%;height:${100-p}%"></div><div class="start-handle" style="top:${p}%"></div>`;
@@ -319,6 +359,16 @@ function renderBlock(canvas,item){
   canvas.appendChild(div);
   attachBlock(div,item);
 }
+
+
+function groupItemsByIds(ids){return schedule?schedule.items.filter(i=>ids.includes(i.task.id)):[];}
+function groupOverlapsForeignBox(ids,minLane,maxLane,start,end,ignoreIndex){return (window.depGroups||[]).some((g,idx)=>idx!==ignoreIndex&&!(g.ids||[]).some(id=>ids.includes(id))&&maxLane>=g.minLane&&minLane<=g.maxLane&&intervalsOverlap(start,end,g.start,g.end));}
+function attachGroupBoxes(canvas,metrics){canvas.querySelectorAll('.dep-box').forEach(box=>{box.addEventListener('pointerdown',e=>startGroupDrag(e,box,metrics));});}
+function startGroupDrag(e,box,metrics){const idx=Number(box.dataset.groupIndex);const g=(window.depGroups||[])[idx];if(!g)return;clearTimeout(longPressTimer);const items=groupItemsByIds(g.ids);groupDrag={idx,ids:[...g.ids],sx:e.clientX,sy:e.clientY,left:parseFloat(box.style.left)||0,top:parseFloat(box.style.top)||0,width:parseFloat(box.style.width)||0,height:parseFloat(box.style.height)||0,start:g.start,end:g.end,minLane:g.minLane,maxLane:g.maxLane,locks:new Map(items.map(i=>[i.task.id,i.task.lockedStart])),lanes:new Map(items.map(i=>[i.task.id,i.task.lane])),itemStarts:new Map(items.map(i=>[i.task.id,i.start])),itemBlocks:new Map(items.map(i=>{const el=document.querySelector(`.task-block[data-id="${i.task.id}"]`);return[i.task.id,{el,left:el?parseFloat(el.style.left)||0:0,top:el?parseFloat(el.style.top)||0:0}];})),box};box.classList.add('dragging');try{box.setPointerCapture(e.pointerId)}catch{}e.preventDefault();}
+document.addEventListener('pointermove',e=>{if(!groupDrag)return;const dx=e.clientX-groupDrag.sx,dy=e.clientY-groupDrag.sy;groupDrag.box.style.left=Math.max(44,groupDrag.left+dx)+'px';groupDrag.box.style.top=Math.max(38,groupDrag.top+dy)+'px';groupDrag.itemBlocks.forEach(v=>{if(v.el){v.el.style.left=Math.max(44,v.left+dx)+'px';v.el.style.top=Math.max(38,v.top+dy)+'px';}});});
+document.addEventListener('pointerup',e=>finishGroupDrag(e));
+document.addEventListener('pointercancel',e=>finishGroupDrag(e));
+function finishGroupDrag(e){if(!groupDrag)return;const gd=groupDrag;gd.box.classList.remove('dragging');try{gd.box.releasePointerCapture(e.pointerId)}catch{}const metrics=getLaneMetrics(Math.max(1,Math.max(0,...schedule.items.map(i=>i.lane))+1));const dy=(parseFloat(gd.box.style.top)-gd.top);const dx=(parseFloat(gd.box.style.left)-gd.left);const delta=Math.round(dy/pxPerMinute);const rowCount=gd.maxLane-gd.minLane+1;const targetMinLane=Math.max(0,Math.round((parseFloat(gd.box.style.left)-metrics.axis-4)/metrics.laneWidth));const targetMaxLane=targetMinLane+rowCount-1;const targetStart=Math.max(0,gd.start+delta);const targetEnd=targetStart+(gd.end-gd.start);if(groupOverlapsForeignBox(gd.ids,targetMinLane,targetMaxLane,targetStart,targetEnd,gd.idx)){gd.ids.forEach(id=>{const t=getTask(id);if(t){t.lockedStart=gd.locks.get(id);t.lane=gd.lanes.get(id);}});toast('不能拖进其他逻辑组的虚线框');}else{gd.ids.forEach(id=>{const t=getTask(id);if(t){const oldStart=gd.itemStarts.get(id)??0;t.lockedStart=Math.max(0,oldStart+delta);t.lane=targetMinLane;}});toast('已移动逻辑组');}groupDrag=null;scheduleTasks(false);}
 
 function updateWaitVisual(block,startWork,total){const p=Math.max(0,Math.min(100,startWork/Math.max(1,total)*100));const solid=block.querySelector('.wait-solid'),grad=block.querySelector('.wait-gradient'),handle=block.querySelector('.start-handle');if(solid)solid.style.height=p+'%';if(grad){grad.style.top=p+'%';grad.style.height=(100-p)+'%';}if(handle)handle.style.top=p+'%';}
 function inForeignBox(taskId,lane,start,end){return (window.depGroups||[]).some(g=>!g.ids.includes(taskId)&&lane>=g.minLane&&lane<=g.maxLane&&intervalsOverlap(start,end,g.start,g.end));}
@@ -360,9 +410,8 @@ function finishDrag(e,item){
   block.classList.remove('dragging');
   try{block.releasePointerCapture(e.pointerId)}catch{}
   if(drag.longOpened){drag=null;return;}
-  /* 轻触判定：位移 < 8px 视为点击 */
   const dist=Math.abs(e.clientX-drag.sx)+Math.abs(e.clientY-drag.sy);
-  if(dist<8){drag=null;showDetailPanel(task.id);return;}
+  if(dist<8){drag=null;return;}
   if(drag.mode==='drag'){
     const newStart=Math.max(0,Math.round((parseFloat(block.style.top)-38)/pxPerMinute));
     const laneWidth=lastLaneWidth||80;
@@ -433,11 +482,14 @@ $('clearAll').onclick=showConfirm;
 $('cancelClear').onclick=hideConfirm;
 $('confirmClear').onclick=()=>{tasks=[];openDepPanels.clear();hideDetailPanel();hideConfirm();optimalMakespan=null;scheduleTasks(true);toast('已清空')};
 $('confirmModal').onclick=e=>{if(e.target.id==='confirmModal')hideConfirm()};
-$('scale').oninput=e=>{pxPerMinute=Number(e.target.value);document.documentElement.style.setProperty('--ppm',pxPerMinute+'px');$('scaleText').textContent=pxPerMinute+' px/分';renderTimeline();};
-$('fit').onclick=()=>{if(!schedule)return;const view=$('timelineScroll').clientHeight-70;const max=Math.max(40,schedule.makespan+8);pxPerMinute=Math.max(3,Math.min(18,Math.floor(view/max)));$('scale').value=pxPerMinute;$('scaleText').textContent=pxPerMinute+' px/分';renderTimeline();};
+$('scale').oninput=e=>{pxPerMinute=Number(e.target.value);document.documentElement.style.setProperty('--ppm',pxPerMinute+'px');$('scaleText').textContent=pxPerMinute+' px/分';renderTimeline();saveLatestState();};
+$('fit').onclick=()=>{if(!schedule)return;const view=$('timelineScroll').clientHeight-70;const max=Math.max(40,schedule.makespan+8);pxPerMinute=Math.max(3,Math.min(18,Math.floor(view/max)));$('scale').value=pxPerMinute;$('scaleText').textContent=pxPerMinute+' px/分';renderTimeline();saveLatestState();};
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
 window.addEventListener('resize',()=>{renderTimeline();updateNonOptimalBanner();});
-scheduleTasks(true);
+loadedSavedState=loadLatestState();
+$('scale').value=pxPerMinute;
+$('scaleText').textContent=pxPerMinute+' px/分';
+scheduleTasks(!loadedSavedState);
 </script>
 </body>
 </html>
