@@ -1,4 +1,4 @@
-name: Build Android APK
+name: Build Release APK and AAB
 
 on:
   push:
@@ -6,8 +6,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-apk:
-    name: Build Debug APK
+  build-release:
+    name: Build signed release APK and AAB
     runs-on: ubuntu-latest
 
     steps:
@@ -31,6 +31,13 @@ jobs:
       - name: Verify web entry
         run: test -f www/index.html
 
+      - name: Verify release signing secrets
+        run: |
+          test -n "${{ secrets.RELEASE_KEYSTORE_BASE64 }}"
+          test -n "${{ secrets.RELEASE_KEYSTORE_PASSWORD }}"
+          test -n "${{ secrets.RELEASE_KEY_ALIAS }}"
+          test -n "${{ secrets.RELEASE_KEY_PASSWORD }}"
+
       - name: Add Android project
         run: npx cap add android
 
@@ -40,15 +47,42 @@ jobs:
       - name: Copy web assets to Android
         run: npx cap copy android
 
+      - name: Decode release keystore
+        env:
+          RELEASE_KEYSTORE_BASE64: ${{ secrets.RELEASE_KEYSTORE_BASE64 }}
+        run: |
+          mkdir -p android/app/keystore
+          echo "$RELEASE_KEYSTORE_BASE64" | base64 --decode > android/app/keystore/time_management_master.jks
+
+      - name: Patch Android release config
+        env:
+          RELEASE_KEYSTORE_PATH: keystore/time_management_master.jks
+          RELEASE_KEYSTORE_PASSWORD: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
+          RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
+          RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
+        run: python3 scripts/patch-android-release.py
+
       - name: Make Gradle executable
         run: chmod +x android/gradlew
 
-      - name: Build debug APK
-        run: cd android && ./gradlew assembleDebug --stacktrace
+      - name: Build signed release APK and AAB
+        env:
+          RELEASE_KEYSTORE_PATH: keystore/time_management_master.jks
+          RELEASE_KEYSTORE_PASSWORD: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
+          RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
+          RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
+        run: cd android && ./gradlew assembleRelease bundleRelease --stacktrace
 
-      - name: Upload APK artifact
+      - name: Upload release APK
         uses: actions/upload-artifact@v4
         with:
-          name: time-master-v3.0.1-icon-fixed-debug-apk
-          path: android/app/build/outputs/apk/debug/*.apk
+          name: time-management-master-v1.0.1-release-apk
+          path: android/app/build/outputs/apk/release/*.apk
+          if-no-files-found: error
+
+      - name: Upload release AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: time-management-master-v1.0.1-release-aab
+          path: android/app/build/outputs/bundle/release/*.aab
           if-no-files-found: error
