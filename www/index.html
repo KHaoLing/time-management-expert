@@ -68,13 +68,14 @@
     .nonoptimal-banner{position:fixed;left:12px;right:12px;bottom:calc(var(--bottom) + env(safe-area-inset-bottom) + 12px);z-index:130;display:none;align-items:center;justify-content:center;border:1px solid #fed7aa;background:#fff7ed;color:#9a3412;border-radius:14px;padding:10px 12px;font-size:13px;font-weight:900;box-shadow:0 14px 34px rgba(15,23,42,.14)}.nonoptimal-banner.show{display:flex}
     .toast{position:fixed;left:50%;bottom:calc(var(--bottom) + 14px);transform:translateX(-50%) translateY(12px);background:rgba(15,23,42,.94);color:white;border-radius:999px;padding:10px 14px;font-size:13px;font-weight:900;box-shadow:0 14px 34px rgba(15,23,42,.24);opacity:0;pointer-events:none;transition:.18s;z-index:200}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
     .detail-overlay{display:none;position:fixed;inset:0;z-index:140;background:rgba(15,23,42,.28);padding:calc(58px + var(--safe-top)) 14px 20px;align-items:flex-start;justify-content:center}.detail-overlay.show{display:flex}
-    .detail-card{width:min(400px,100%);border-radius:20px;background:#fff;box-shadow:0 28px 70px rgba(15,23,42,.28);padding:16px;border:1px solid var(--line);animation:detailSlide .22s ease}
+    .detail-card{width:min(400px,100%);border-radius:20px;background:#fff;box-shadow:0 28px 70px rgba(15,23,42,.28);padding:16px;border:1px solid var(--line);animation:detailSlide .22s ease;max-height:calc(100dvh - 92px - var(--safe-top));overflow:auto}
     @keyframes detailSlide{from{opacity:0;transform:translateY(-14px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
     .detail-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.detail-head h3{margin:0;font-size:16px}
     .detail-done{border:0;border-radius:10px;background:var(--primary);color:#fff;padding:7px 16px;font-weight:900;font-size:13px;box-shadow:0 6px 14px rgba(49,94,251,.2)}
     .detail-body .seg{margin-bottom:10px}
     .detail-field label{display:block;font-size:11px;color:var(--muted);font-weight:800;margin:0 0 5px}
     .detail-fields{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .detail-deps{margin-top:10px}.detail-deps .dep-grid{max-height:150px;overflow:auto}.detail-deps .deps{margin-top:0}
     @media (min-width:700px){.phone{max-width:430px;margin:0 auto;border-left:1px solid var(--line);border-right:1px solid var(--line)}}
   </style>
 </head>
@@ -132,6 +133,7 @@
         <button type="button" data-type="waiting">等待</button>
       </div>
       <div class="detail-fields" id="detailFields"></div>
+      <div class="detail-deps" id="detailDeps"></div>
     </div>
   </div>
 </div>
@@ -211,6 +213,7 @@ function showDetailPanel(taskId){
   $('detailName').value=t.name;
   $('detailTypeSeg').querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.type===t.type));
   renderDetailFields(t);
+  renderDetailDeps(t);
   $('detailOverlay').classList.add('show');
 }
 function hideDetailPanel(){detailTaskId=null;$('detailOverlay').classList.remove('show');}
@@ -224,6 +227,14 @@ function renderDetailFields(t){
   }
   attachDetailFieldListeners();
 }
+function renderDetailDeps(t){
+  const box=$('detailDeps');if(!box)return;
+  const deps=Array.isArray(t.deps)?t.deps:[];
+  const names=deps.map(id=>getTask(id)?.name).filter(Boolean);
+  const summary=names.length?names.join('、'):'无';
+  const options=tasks.filter(o=>o.id!==t.id).map(o=>`<label class="dep-chip"><input class="detail-dep-input" type="checkbox" data-task="${t.id}" value="${o.id}" ${deps.includes(o.id)?'checked':''}>${esc(o.name)}</label>`).join('')||'<div class="dep-empty">暂无可选前置任务</div>';
+  box.innerHTML=`<div class="deps"><div class="deps-head"><label>前置任务</label></div><div class="dep-summary">${esc(summary)}</div><div class="dep-grid">${options}</div></div>`;
+}
 function attachDetailFieldListeners(){
   const t=getTask(detailTaskId);if(!t)return;
   const durInput=document.getElementById('detailDuration');
@@ -235,6 +246,14 @@ function attachDetailFieldListeners(){
 }
 $('detailClose').onclick=hideDetailPanel;
 $('detailOverlay').onclick=e=>{if(e.target.id==='detailOverlay')hideDetailPanel()};
+$('detailDeps').addEventListener('change',e=>{
+  if(!e.target.matches('.detail-dep-input'))return;
+  const t=getTask(detailTaskId);if(!t)return;
+  const ids=Array.from(document.querySelectorAll(`.detail-dep-input[data-task="${t.id}"]:checked`)).map(x=>x.value);
+  t.deps=ids;t.lockedStart=null;
+  skipTaskRender=true;scheduleTasks(false);skipTaskRender=false;
+  renderDetailDeps(t);
+});
 $('detailName').oninput=e=>{const t=getTask(detailTaskId);if(t){t.name=e.target.value;t.lockedStart=null;skipTaskRender=true;scheduleTasks(false);skipTaskRender=false;}};
 $('detailTypeSeg').onclick=e=>{
   const btn=e.target.closest('button[data-type]');if(!btn)return;
@@ -245,6 +264,7 @@ $('detailTypeSeg').onclick=e=>{
   t.lockedStart=null;
   $('detailTypeSeg').querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.type===t.type));
   renderDetailFields(t);
+  renderDetailDeps(t);
   skipTaskRender=true;scheduleTasks(false);skipTaskRender=false;
 };
 
