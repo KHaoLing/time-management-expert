@@ -1,8 +1,8 @@
 from pathlib import Path
 import re
 
-VERSION_CODE = 1
-VERSION_NAME = "1.0.1"
+VERSION_CODE = 2
+VERSION_NAME = "1.0.2"
 
 path = Path("android/app/build.gradle")
 text = path.read_text(encoding="utf-8")
